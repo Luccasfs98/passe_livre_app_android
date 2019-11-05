@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#27AE60</color>
+    <color name="colorPrimaryDark">#0A8F45</color>
+    <color name="colorAccent">#9E9E9E</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorApto">#77D353</color>
+    <color name="colorAnalise">#FFBA5C</color>
+    <color name="colorPendente">#FFFB1D</color>
+    <color name="colorInapto">#FA7073</color>
+    <color name="colorCardStatusHeader">#5A6978</color>
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#757575</color>
+    <color name="dividerColor">#BDBDBD</color>
+    <color name="textIcons">#FFFFFF</color>
+</resources>

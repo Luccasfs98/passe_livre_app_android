@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:id="@+id/cv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cornerRadius="@dimen/radius_default"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="@dimen/margin_default"
+        app:cardBackgroundColor="@color/colorPrimary"
+        android:theme="@style/Widget.MaterialComponents.CardView"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/iv_bus"
+                android:layout_margin="@dimen/margin_default"
+                android:src="@drawable/ic_passe_livre_bus"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_bus"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/margin_default"
+                android:id="@+id/tv_desc"
+                android:layout_marginEnd="@dimen/margin_default"
+                android:textColor="#fff"
+                android:layout_marginTop="@dimen/margin_default"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:text="@string/text_home_passe_livre"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:id="@+id/btn_passe_livre"
+                app:cornerRadius="@dimen/radius_default"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textColor="@color/primaryText"
+                android:layout_margin="@dimen/margin_default"
+                android:text="@string/text_btn_cadastrar_documentos"
+                app:layout_constraintTop_toBottomOf="@id/tv_desc"
+                android:theme="@style/Widget.MaterialComponents.Button"
+                android:backgroundTint="#fff"
+                android:layout_height="wrap_content"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:id="@+id/cv_status"
+        android:visibility="gone"
+        app:cornerRadius="@dimen/radius_default"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/colorCardStatusHeader"
+        android:theme="@style/Widget.MaterialComponents.CardView"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Status da documentação"
+                android:textColor="@color/colorWhite"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                app:layout_constraintBottom_toTopOf="@+id/btn_register_docs"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/textView4"
+                app:layout_constraintHorizontal_bias="0.192"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.14" />
+
+            <TextView
+                android:id="@+id/textView4"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="@string/text_apto"
+                android:textColor="@color/colorApto"
+                app:layout_constraintBottom_toTopOf="@+id/btn_register_docs"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_register_docs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:insetBottom="0dp"
+                android:insetTop="0dp"
+                android:text="@string/text_clique_para_informacoes"
+                android:textColor="@color/colorWhite"
+                android:theme="@style/Widget.MaterialComponents.Button"
+                app:cornerRadius="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:layout_editor_absoluteX="25dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_suporte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cornerRadius="@dimen/radius_default"
+        android:backgroundTint="@color/colorAccent"
+        android:text="@string/text_btn_contato_entidade"
+        android:theme="@style/Widget.MaterialComponents.Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

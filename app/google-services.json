@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "264820843241",
+    "firebase_url": "https://passe-livre-documentos.firebaseio.com",
+    "project_id": "passe-livre-documentos",
+    "storage_bucket": "passe-livre-documentos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264820843241:android:a2017302143ecd224ec678",
+        "android_client_info": {
+          "package_name": "com.luccas.passelivredocumentos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264820843241-4parhh1q8ctmechrntuni5a07pn62okc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.luccas.passelivredocumentos",
+            "certificate_hash": "b456f0a489ca5db10d7e1275c6a2376cb080f8d7"
+          }
+        },
+        {
+          "client_id": "264820843241-p1qc2fv7enanhheperrs18dpl27h1dn7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNBGMj3eC3StXaLFqDsUiEfdQ3KNtXuFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264820843241-p1qc2fv7enanhheperrs18dpl27h1dn7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

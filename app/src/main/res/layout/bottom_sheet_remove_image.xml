@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:paddingTop="15dp"
+            android:paddingBottom="25dp"
+            android:text="Remover imagem"
+            android:textSize="18sp"
+            android:paddingStart="16dp"
+            android:textStyle="bold"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+
+        android:background="@drawable/gradient"
+            android:textColor="@android:color/white"
+    />
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:id="@+id/tv_message"
+            android:text="@string/text_remove_imagem_alerta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:id="@+id/bt_keep"
+            android:text="MANTER"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="0dp"
+            android:layout_marginEnd="16dp"
+            android:id="@+id/bt_remove"
+            android:backgroundTint="@color/colorInapto"
+            android:layout_weight="5"
+            android:text="SIM, EXCLUIR!"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</LinearLayout>
