@@ -20,7 +20,7 @@ import com.luccas.passelivredocumentos.ui.base.BaseActivity
 import com.luccas.passelivredocumentos.ui.login.AuthActivity
 import com.luccas.passelivredocumentos.utils.openActivity
 
-class MainActivity : BaseActivity<MainViewModel, MainBinding>() {
+class MainActivity : BaseActivity<MainViewModel>() {
 
     override val layoutRes = R.layout.activity_main
     override fun getViewModel() = MainViewModel::class.java

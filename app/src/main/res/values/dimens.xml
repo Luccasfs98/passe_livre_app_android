@@ -7,4 +7,5 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="radius_default">8dp</dimen>
+    <dimen name="margin_default2">8dp</dimen>
 </resources>

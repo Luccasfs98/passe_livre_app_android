@@ -1,5 +1,6 @@
 package com.luccas.passelivredocumentos.di.builder
 
+import com.luccas.passelivredocumentos.ui.checkingcopy.CheckingCopyActivity
 import com.luccas.passelivredocumentos.ui.MainActivity
 import com.luccas.passelivredocumentos.ui.SplashScreenActivity
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsActivity
@@ -24,11 +25,14 @@ abstract class ActivityBuilderModule {
     @ContributesAndroidInjector
     abstract fun authActivity(): AuthActivity
 
-    @ContributesAndroidInjector(modules = [IdentityDocsFragmentBuilderModule::class])
+    @ContributesAndroidInjector(modules = [FragmentBuilderModule::class])
     abstract fun homeActivity(): IdentityDocsActivity
 
     @ContributesAndroidInjector
     abstract fun mainActivity(): MainActivity
+
+    @ContributesAndroidInjector(modules = [FragmentBuilderModule::class])
+    abstract fun checkingCopyActivity(): CheckingCopyActivity
 
 
 }

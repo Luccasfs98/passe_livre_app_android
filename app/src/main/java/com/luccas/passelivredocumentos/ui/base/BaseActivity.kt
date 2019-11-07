@@ -21,7 +21,7 @@ import javax.inject.Named
  * Company: CroSoften Tecnologia
  */
 
- abstract class BaseActivity<V : ViewModel,D : ViewDataBinding>: AppCompatActivity(),
+ abstract class BaseActivity<V : ViewModel>: AppCompatActivity(),
     HasSupportFragmentInjector {
 
     @Inject
@@ -33,8 +33,6 @@ import javax.inject.Named
     @get:LayoutRes
     abstract val layoutRes: Int
 
-    lateinit var dataBinding: D
-
     @Inject
     @Named("viewModelFactory")
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,7 +42,7 @@ import javax.inject.Named
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        dataBinding = DataBindingUtil.setContentView(this, layoutRes)
+        setContentView(layoutRes)
         sharedPref = getSharedPreferences("App", 0)
         viewModel = ViewModelProvider(this, viewModelFactory).get(getViewModel())
     }

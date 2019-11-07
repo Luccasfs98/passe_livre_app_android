@@ -17,12 +17,15 @@
     <string name="text_auth_login">Para iniciar, conecte-se com uma conta Google e tenha acesso aos recursos desse aplicativo</string>
     <string name="text_auth_terms">*Ao conectar, você declara que aceita os Termos de Uso e Políticas de Privacidade</string>
     <string name="text_home_passe_livre">Para obter o passe livre, é necessário realizar o cadastro de uma série de documentos e esperar a aprovação.</string>
+    <string name="text_profile_pic">Aperte no ícone para enviar sua foto, tenha certeza de que seu rosto está nítido.</string>
     <string name="text_btn_cadastrar_documentos">Cadastrar documentos</string>
     <string name="text_btn_contato_entidade">Contato com a entidade</string>
     <string name="text_apto">Apto</string>
     <string name="text_clique_para_informacoes">Clique para mais informações</string>
-    <string name="text_envie_fotos">Envie nos fotos de seus documentos!</string>
+    <string name="text_envie_fotos">Envie seus documentos!</string>
     <string name="wait">Aguarde...</string>
     <string name="text_remove_imagem_alerta">Tem certeza que deseja remover esta imagem?</string>
     <string name="menu_quit">Sair</string>
+    <string name="text_bt_next">Prosseguir</string>
+    <string name="text_proof_address">Caso seu comprovante não esteja em seu nome ou no nome dos seus pais, é necessário uma declaração autenticada em cartório</string>
 </resources>

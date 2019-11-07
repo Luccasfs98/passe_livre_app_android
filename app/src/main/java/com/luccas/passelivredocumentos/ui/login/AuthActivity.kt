@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.luccas.passelivredocumentos.databinding.AuthBinding
 import com.luccas.passelivredocumentos.models.User
@@ -27,7 +28,7 @@ import com.luccas.passelivredocumentos.utils.openActivity
 
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
-class AuthActivity : BaseActivity<AuthViewModel,AuthBinding>() {
+class AuthActivity : BaseActivity<AuthViewModel>() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private val db = FirebaseFirestore.getInstance()

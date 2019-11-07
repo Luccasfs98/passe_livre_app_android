@@ -2,26 +2,22 @@ package com.luccas.passelivredocumentos.ui.identitydocs
 
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
-import com.luccas.passelivredocumentos.PasseLivreApplication
 import java.io.File
-import java.util.*
 import javax.inject.Inject
 
 class IdentityDocsViewModel  @Inject constructor(val reference : StorageReference) : ViewModel() {
 
      var uploadCallback = MutableLiveData<Boolean>()
-
-     fun uploadImage(file: File,userID:String):MutableLiveData<Boolean>{
+     fun uploadImage(filePath:String,file: File,userID:String):MutableLiveData<Boolean>{
         if(file != null){
             val ref = reference.child(
-                "foto_perfil/$userID")
+                "$filePath/$userID")
             val uploadTask = ref.putFile(Uri.fromFile(file))
 
             val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
@@ -47,9 +43,9 @@ class IdentityDocsViewModel  @Inject constructor(val reference : StorageReferenc
         }
          return uploadCallback
     }
-     fun removeImage(userID:String):MutableLiveData<Boolean>{
+     fun removeImage(filePath:String,userID:String):MutableLiveData<Boolean>{
              val ref = reference.child(
-                 "foto_perfil/$userID")
+                 "$filePath/$userID")
              val uploadTask = ref.delete().addOnCompleteListener { task ->
                  if (task.isSuccessful) {
                      val downloadUri = task.result
