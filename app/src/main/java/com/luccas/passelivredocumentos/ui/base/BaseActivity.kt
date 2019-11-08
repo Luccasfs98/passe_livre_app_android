@@ -15,13 +15,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 import javax.inject.Named
-
-/**
- * Created by Gustavo de Jesus Gomes on 17 Agosto,2019
- * Company: CroSoften Tecnologia
- */
-
- abstract class BaseActivity<V : ViewModel>: AppCompatActivity(),
+abstract class BaseActivity<V : ViewModel>: AppCompatActivity(),
     HasSupportFragmentInjector {
 
     @Inject

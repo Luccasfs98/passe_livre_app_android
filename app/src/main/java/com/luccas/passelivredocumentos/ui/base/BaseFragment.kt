@@ -53,22 +53,14 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
-/**
- * Created by Gustavo de Jesus Gomes on 17 Agosto,2019
- * Company: CroSoften Tecnologia
- */
 
-public abstract class BaseFragment<V : ViewModel> : Fragment() {
+abstract class BaseFragment<V : ViewModel> : Fragment() {
 
     @Inject
     @Named("viewModelFactory")
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     lateinit var viewModel: V
-
-
     lateinit var sharedPref: SharedPreferences
-
     lateinit var user : FirebaseUser
     lateinit var storage : FirebaseStorage
     lateinit var firestore : FirebaseFirestore
@@ -92,6 +84,44 @@ public abstract class BaseFragment<V : ViewModel> : Fragment() {
         firestore  = FirebaseFirestore.getInstance()
     }
 
+    private var sheetView: View? = null
+    private lateinit var bottomSheet: BottomSheetDialog
+
+    fun showBottomSheetImage() {
+        bottomSheet  = BottomSheetDialog(ContextThemeWrapper(context!!, R.style.DialogSlideAnim))
+        sheetView = layoutInflater.inflate(R.layout.bottom_image_view, null)
+        bottomSheet.setContentView(sheetView!!)
+        bottomSheet.window!!.decorView.setBackgroundResource(android.R.color.transparent)
+        bottomSheet.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        bottomSheet.setCancelable(true)
+        bottomSheet.show()
+
+    }
+    fun setImageIntoBottomSheet(path:String,error:Int){
+        val imageView = bottomSheet.findViewById<ImageView>(R.id.iv)
+        Glide.with(this)
+            .load(
+                FirebaseStorage.getInstance().reference
+                    .child("$path/${sharedPref.getString("userID","")}"))
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .error(error)
+            .into(imageView!!)
+    }
+    fun getPath(uri: Uri): String? {
+        val projection = arrayOf(MediaStore.Video.Media.DATA)
+        val cursor = context!!.getContentResolver().query(uri, projection, null, null, null)
+        if (cursor != null) {
+            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            val column_index = cursor!!
+                .getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
+            cursor!!.moveToFirst()
+            return cursor!!.getString(column_index)
+        } else
+            return null
+    }
+
     @Nullable
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -100,27 +130,26 @@ public abstract class BaseFragment<V : ViewModel> : Fragment() {
     ): View? {
         return inflater.inflate(layoutRes,container,false)
     }
-
-     fun setupDocs(
+    fun setupDocs(
         path: String,
         imageView: ImageView?,
         errorImage: Int
     ) : MutableLiveData<Boolean> {
-         var isSuscess : MutableLiveData<Boolean>? = MutableLiveData()
-         val circularProgressDrawable = CircularProgressDrawable(context!!)
-         circularProgressDrawable.strokeWidth = 5f
-         circularProgressDrawable.centerRadius = 30f
-         circularProgressDrawable.setTint(resources.getColor(R.color.colorWhite))
-         circularProgressDrawable.start()
+        var isSuscess : MutableLiveData<Boolean>? = MutableLiveData()
+        val circularProgressDrawable = CircularProgressDrawable(context!!)
+        circularProgressDrawable.strokeWidth = 5f
+        circularProgressDrawable.centerRadius = 30f
+        circularProgressDrawable.setTint(resources.getColor(R.color.colorWhite))
+        circularProgressDrawable.start()
 
-         Glide.with(this)
+        Glide.with(this)
             .load(
                 FirebaseStorage.getInstance().reference
                     .child("$path/${sharedPref.getString("userID","")}"))
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)
             .error(errorImage)
-             .placeholder(circularProgressDrawable)
+            .placeholder(circularProgressDrawable)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
                     imageView!!.setImageResource(errorImage)
@@ -136,43 +165,6 @@ public abstract class BaseFragment<V : ViewModel> : Fragment() {
             .into(imageView!!)
         return isSuscess!!
     }
-    private var sheetView: View? = null
-    private lateinit var bottomSheet: BottomSheetDialog
 
-     fun showBottomSheetImage() {
-        bottomSheet  = BottomSheetDialog(ContextThemeWrapper(context!!, R.style.DialogSlideAnim))
-        sheetView = layoutInflater.inflate(R.layout.bottom_image_view, null)
-        bottomSheet.setContentView(sheetView!!)
-        bottomSheet.window!!.decorView.setBackgroundResource(android.R.color.transparent)
-        bottomSheet.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        bottomSheet.setCancelable(true)
-        bottomSheet.show()
-
-    }
-     fun setImageIntoBottomSheet(path:String,error:Int){
-        val imageView = bottomSheet.findViewById<ImageView>(R.id.iv)
-        Glide.with(this)
-            .load(
-                FirebaseStorage.getInstance().reference
-                    .child("$path/${sharedPref.getString("userID","")}"))
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .error(error)
-            .into(imageView!!)
-    }
-
-    fun getPath(uri: Uri): String? {
-        val projection = arrayOf(MediaStore.Video.Media.DATA)
-        val cursor = context!!.getContentResolver().query(uri, projection, null, null, null)
-        if (cursor != null) {
-            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
-            val column_index = cursor!!
-                .getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
-            cursor!!.moveToFirst()
-            return cursor!!.getString(column_index)
-        } else
-            return null
-    }
 
 }

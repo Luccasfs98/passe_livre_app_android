@@ -70,6 +70,7 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
         super.onResume()
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
+
             openActivity<MainActivity> (
                 finishWhenOpen = true,
                 enterAnim = R.anim.slide_from_right,
@@ -84,12 +85,36 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
                 firebaseAuth = FirebaseAuth.getInstance()
-                insertNewUserIntoDatabase()
+                verifyIfUserAlreadyExistsInDataBase()
+
             } else {
                 Toast.makeText(this, "Login com google falhou, tente novamente mais tarde!", Toast.LENGTH_LONG).show()
             }
         }
     }
+
+    private fun verifyIfUserAlreadyExistsInDataBase() {
+         db.collection("users")
+             .document(FirebaseAuth.getInstance().currentUser!!.uid)
+             .get()
+             .addOnSuccessListener {Log.i("teste",it.id)
+                 if (it.getDocumentReference(FirebaseAuth.getInstance().currentUser!!.uid)==null){
+                     insertNewUserIntoDatabase()
+                 } else {
+                     sharedPref.edit().putString("userID",it.id).apply()
+                     sharedPref.edit().putString("userEmail",it.getString("email")).apply()
+                     sharedPref.edit().putString("userName",it.getString("name")).apply()
+                     sharedPref.edit().putString("photoUrl",FirebaseAuth.getInstance().currentUser!!.photoUrl.toString()).apply()
+                     openActivity<MainActivity>(
+                         finishWhenOpen = true,
+                         enterAnim =  R.anim.nav_default_pop_enter_anim,
+                         exitAnim =  R.anim.nav_default_pop_exit_anim
+                     ) {  }
+                 }
+             }
+             .addOnFailureListener {Log.i("teste",it.localizedMessage) }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
@@ -109,7 +134,7 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
         val userData =
             User(
                 firebaseAuth.currentUser!!.uid,
-                firebaseAuth.currentUser!!.displayName!!, firebaseAuth.currentUser!!.email!!,firebaseAuth.currentUser!!.photoUrl.toString()
+                firebaseAuth.currentUser!!.displayName!!, firebaseAuth.currentUser!!.email!!,"student"
             )
 
         val ref = db.collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid)
@@ -122,7 +147,7 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
                 sharedPref.edit().putString("userID",userData.id).apply()
                 sharedPref.edit().putString("userEmail",userData.email).apply()
                 sharedPref.edit().putString("userName",userData.name).apply()
-                sharedPref.edit().putString("photoUrl",userData.photoUrl).apply()
+                sharedPref.edit().putString("photoUrl",FirebaseAuth.getInstance().currentUser!!.photoUrl.toString()).apply()
 
                 openActivity<MainActivity>(
                     finishWhenOpen = true,

@@ -81,7 +81,7 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
         toolbar.setNavigationOnClickListener {
             activity!!.onBackPressed()
         }
-        iv_profile_pic.setOnClickListener {
+        cv_profile_pic.setOnClickListener {
             if(isProfilePicUploaded){
                 showBottomSheetImage()
                 setImageIntoBottomSheet(PROFILE_PIC_PATH,R.drawable.ic_profile_pic_default)
@@ -90,7 +90,7 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
                 selectPhoto()
             }
         }
-        iv_id_front.setOnClickListener{
+        cv_id_front.setOnClickListener{
             if(isIdentityFrontUploaded){
                 showBottomSheetImage()
                 setImageIntoBottomSheet(IDENTITY_FRONT_PATH,R.drawable.ic_add)
@@ -99,7 +99,7 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
                 selectPhoto()
             }
         }
-        iv_id_verse.setOnClickListener{
+        cv_id_verse.setOnClickListener{
             if(isIdentityVerseUploaded){
                 showBottomSheetImage()
                 setImageIntoBottomSheet(IDENTITY_VERSE_PATH,R.drawable.ic_add)
@@ -109,7 +109,7 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
             }
         }
 
-        iv_profile_pic.setOnLongClickListener {
+        cv_profile_pic.setOnLongClickListener {
             if (isProfilePicUploaded){
                 filePath = PROFILE_PIC_PATH
                 showDialogRemoveImage(filePath,iv_profile_pic,R.drawable.ic_profile_pic_default).observe(this, androidx.lifecycle.Observer { isProfilePicUploaded = !it })
@@ -119,7 +119,7 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
             }
         }
 
-        iv_id_front.setOnLongClickListener {
+        cv_id_front.setOnLongClickListener {
             if (isIdentityFrontUploaded){
                 filePath = IDENTITY_FRONT_PATH
                 showDialogRemoveImage(filePath,iv_id_front,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer { isIdentityFrontUploaded = !it })
@@ -129,7 +129,7 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
             }
         }
 
-        iv_id_verse.setOnLongClickListener {
+        cv_id_verse.setOnLongClickListener {
             if (isIdentityVerseUploaded){
                 filePath = IDENTITY_VERSE_PATH
                 showDialogRemoveImage(filePath,iv_id_verse,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer {isIdentityVerseUploaded = !it })

@@ -17,7 +17,7 @@
     <string name="text_auth_login">Para iniciar, conecte-se com uma conta Google e tenha acesso aos recursos desse aplicativo</string>
     <string name="text_auth_terms">*Ao conectar, você declara que aceita os Termos de Uso e Políticas de Privacidade</string>
     <string name="text_home_passe_livre">Para obter o passe livre, é necessário realizar o cadastro de uma série de documentos e esperar a aprovação.</string>
-    <string name="text_profile_pic">Aperte no ícone para enviar sua foto, tenha certeza de que seu rosto está nítido.</string>
+    <string name="text_profile_pic">Tenha certeza de que seu rosto está nítido.</string>
     <string name="text_btn_cadastrar_documentos">Cadastrar documentos</string>
     <string name="text_btn_contato_entidade">Contato com a entidade</string>
     <string name="text_apto">Apto</string>
