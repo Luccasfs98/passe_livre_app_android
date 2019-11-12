@@ -9,28 +9,38 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.button.MaterialButton
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsActivity
 import com.luccas.passelivredocumentos.R
+import com.luccas.passelivredocumentos.SolicitationMoreDetails
+import com.luccas.passelivredocumentos.ui.base.BaseFragment
+import com.luccas.passelivredocumentos.ui.formpersonaldata.FormPersonalData
 import com.luccas.passelivredocumentos.utils.openActivity
+import kotlinx.android.synthetic.main.fragment_home.*
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment<HomeViewModel>() {
 
-    private lateinit var homeViewModel: HomeViewModel
+    override val layoutRes: Int
+        get() = R.layout.fragment_home
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        homeViewModel =
-            ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+    override fun getViewModel() = HomeViewModel::class.java
 
-        root.findViewById<MaterialButton>(R.id.btn_passe_livre).setOnClickListener{
-            context!!.openActivity<IdentityDocsActivity>(
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        btn_passe_livre.setOnClickListener {
+            context!!.openActivity<FormPersonalData>(
                 enterAnim = R.anim.anim_slide_in_down,
                 exitAnim = R.anim.anim_slide_out_up
-            ) {  }
+            ) { }
+        }
+        if (sharedPref.getBoolean("sendedDocs",false)){
+            cv_send_docs.visibility = View.GONE
+            cv_status_docs.visibility = View.VISIBLE
+
+            bt_see_more_information.setOnClickListener {
+                activity!!.openActivity<SolicitationMoreDetails> {
+
+                }
+            }
         }
 
-        return root
     }
 }

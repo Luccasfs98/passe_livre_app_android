@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/formpersonaldata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ui.formpersonaldata.FormPersonalDataFragment">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/toolbar"
+            app:title="Formulário 3/4"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:hintAnimationEnabled="true"
+                android:hint="CEP"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                android:id="@+id/til_cep"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                android:layout_width="match_parent"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:id="@+id/edt_cep"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:hintAnimationEnabled="true"
+                android:hint="Endereço"
+                android:id="@+id/til_address"
+                app:boxCornerRadiusBottomEnd="4dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                android:layout_width="match_parent"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:id="@+id/edt_address"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="10"
+                android:layout_height="wrap_content">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:hintAnimationEnabled="true"
+                    android:hint="Complemento"
+                    android:id="@+id/til_complement"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="6"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:id="@+id/edt_complement"
+                        style="@style/Widget.AppCompat.EditText"
+                        android:layout_height="wrap_content"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    app:hintAnimationEnabled="true"
+                    android:hint="Nº"
+                    android:id="@+id/til_number"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:id="@+id/edt_number"
+                        style="@style/Widget.AppCompat.EditText"
+                        android:layout_height="wrap_content"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:hintAnimationEnabled="true"
+                android:hint="Bairro"
+                android:id="@+id/til_neighborhood"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                android:layout_width="match_parent"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_height="wrap_content"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:id="@+id/edt_neighborhood"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:hintAnimationEnabled="true"
+                android:hint="Cidade"
+                android:id="@+id/til_city"
+                android:layout_marginTop="16dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                android:layout_width="match_parent"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_height="wrap_content"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:id="@+id/edt_city"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:hintAnimationEnabled="true"
+                android:hint="UF"
+                android:id="@+id/til_uf"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                android:layout_marginTop="16dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                android:layout_width="match_parent"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_height="wrap_content"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:maxLength="2"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:id="@+id/edt_uf"
+                    android:textAllCaps="true"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:text="@string/text_bt_next"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/cv_id_verse"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/bt_next"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:backgroundTint="@color/colorAccent"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

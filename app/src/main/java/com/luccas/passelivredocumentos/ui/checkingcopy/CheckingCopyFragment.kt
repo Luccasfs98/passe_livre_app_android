@@ -18,9 +18,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.luccas.passelivredocumentos.BuildConfig
 import com.luccas.passelivredocumentos.R
+import com.luccas.passelivredocumentos.ui.MainActivity
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
 import com.luccas.passelivredocumentos.ui.base.UploadAndRemoveFileViewModel
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment
+import com.luccas.passelivredocumentos.utils.openActivity
 import kotlinx.android.synthetic.main.checking_copy_fragment.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -54,6 +56,17 @@ class CheckingCopyFragment : BaseFragment<UploadAndRemoveFileViewModel>() {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
             activity!!.onBackPressed()
+        }
+
+        bt_next.setOnClickListener {
+
+            sharedPref.edit().putBoolean("sendedDocs",true).apply()
+            activity!!.finishAffinity()
+            activity!!.openActivity<MainActivity> (
+                finishWhenOpen = true,
+                enterAnim = R.anim.anim_fade_out,
+                exitAnim = R.anim.anim_fade_in
+            ){  }
         }
 
         iv_address.setOnClickListener {

@@ -3,6 +3,7 @@ package com.luccas.passelivredocumentos.di.builder
 import com.luccas.passelivredocumentos.ui.checkingcopy.CheckingCopyFragment
 import com.luccas.passelivredocumentos.ui.formaddress.FormAddressFragment
 import com.luccas.passelivredocumentos.ui.formpersonaldata.FormPersonalDataFragment
+import com.luccas.passelivredocumentos.ui.home.HomeFragment
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -12,12 +13,9 @@ import dagger.android.ContributesAndroidInjector
 / Company: CroSoften Tecnologia
  **/
 @Module
-abstract class FragmentBuilderModule {
+abstract class MainActivityFragmentBuilder {
 
     @ContributesAndroidInjector
-    abstract fun identityDocsFragment(): IdentityDocsFragment
-
-    @ContributesAndroidInjector
-    abstract fun checkingCopyFragment(): CheckingCopyFragment
+    abstract fun homeFragment(): HomeFragment
 
 }

@@ -120,11 +120,10 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
         if (requestCode == RC_SIGN_IN) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
-                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Erro: "+e.message, Toast.LENGTH_LONG).show()
             }
         }
     }

@@ -7,6 +7,11 @@ import com.luccas.passelivredocumentos.ui.base.UploadAndRemoveFileViewModel
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsViewModel
 import com.luccas.passelivredocumentos.ui.login.AuthViewModel
 import com.luccas.passelivredocumentos.ui.checkingcopy.CheckingCopyViewModel
+import com.luccas.passelivredocumentos.ui.formaddress.FormAddressViewModel
+import com.luccas.passelivredocumentos.ui.formcollegeinformation.FormCollegeInformationViewModel
+import com.luccas.passelivredocumentos.ui.formpersonaldata.FormPersonalDataViewModel
+import com.luccas.passelivredocumentos.ui.formtransportdata.FormTransportDataViewModel
+import com.luccas.passelivredocumentos.ui.home.HomeViewModel
 import com.luccas.passelivredocumentos.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module
@@ -48,6 +53,33 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UploadAndRemoveFileViewModel::class)
     abstract fun uploadAndRemoveFileViewModel(uploadAndRemoveFileViewModel: UploadAndRemoveFileViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FormPersonalDataViewModel::class)
+    abstract fun formPersonalDataViewModel(formPersonalDataViewModel: FormPersonalDataViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FormCollegeInformationViewModel::class)
+    abstract fun formCollegeInformationViewModel(formCollege: FormCollegeInformationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FormAddressViewModel::class)
+    abstract fun formAddressViewModel(formAddresViewModel: FormAddressViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FormTransportDataViewModel::class)
+    abstract fun formTransportDataViewModel(formTransportDataViewModel: FormTransportDataViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeViewModel::class)
+    abstract fun homeViewModel(homeViewModel: HomeViewModel): ViewModel
+
 
     @Binds
     abstract fun bindsViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

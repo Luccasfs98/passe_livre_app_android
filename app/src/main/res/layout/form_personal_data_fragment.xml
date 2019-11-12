@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/formpersonaldata"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ui.formpersonaldata.FormPersonalDataFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/toolbar"
+        app:title="Formulário"
+        style="@style/Widget.MaterialComponents.Toolbar.Primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_margin="16dp"
+            app:hintAnimationEnabled="true"
+            android:hint="Nome completo"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp"
+            android:id="@+id/til_name"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:id="@+id/edt_name"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:id="@+id/til_cpf"
+            app:hintAnimationEnabled="true"
+            android:hint="CPF"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:inputType="number"
+                android:maxLines="1"
+                android:id="@+id/edt_cpf"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:hintAnimationEnabled="true"
+            android:hint="Data de nascimento"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp"
+            android:id="@+id/til_date"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:inputType="number"
+                android:maxLines="1"
+                android:id="@+id/edt_date"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:hintAnimationEnabled="true"
+            android:hint="Nome do pai"
+            android:id="@+id/til_father"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:inputType="text"
+                android:maxLines="1"
+                android:id="@+id/edt_father_name"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:hintAnimationEnabled="true"
+            android:hint="Nome da mãe"
+            android:id="@+id/til_mother"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="wrap_content"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:inputType="text"
+                android:maxLines="1"
+                android:id="@+id/edt_mother_name"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:text="Sexo"
+            android:layout_width="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:layout_height="wrap_content"
+            android:weightSum="10"
+            android:id="@+id/toggle_group_sex"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:singleSelection="true"
+            android:layout_width="match_parent">
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:id="@+id/btn_masc"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:text="Masculino"/>
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:id="@+id/btn_fem"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:text="Feminino"/>
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:text="Tipo de Solicitação"
+            android:layout_width="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:layout_height="wrap_content"
+            android:weightSum="10"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:id="@+id/toggle_grou_type_solicitation"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:singleSelection="true"
+            android:layout_width="match_parent">
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_weight="5"
+                android:id="@+id/bt_renovation_with_Card"
+                android:layout_height="wrap_content"
+                android:text="Renovação anual com cartão"/>
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_weight="5"
+                android:id="@+id/bt_renovation_without_Card"
+                android:layout_height="wrap_content"
+                android:text="Renovação anual sem cartão"/>
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_weight="5"
+                android:id="@+id/bt_new_user"
+                android:layout_height="wrap_content"
+                android:text="Usuário novo"/>
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_weight="5"
+                android:id="@+id/bt_second_way"
+                android:layout_height="wrap_content"
+                android:text="2ª via"/>
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:text="@string/text_bt_next"
+            app:layout_constraintTop_toBottomOf="@+id/cv_id_verse"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/bt_next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/colorAccent"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

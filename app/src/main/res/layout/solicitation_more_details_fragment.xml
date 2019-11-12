@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            android:layout_width="match_parent"
+            app:title="Mais informações"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_default"
+            android:text="Detalhes da sua solicitação"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            app:cornerRadius="@dimen/radius_default"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="16dp"
+            app:cardBackgroundColor="@color/colorCardStatusHeader"
+            android:theme="@style/Widget.MaterialComponents.CardView"
+            android:layout_height="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:id="@+id/textView6"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="Status:"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:textColor="@color/colorWhite"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/textView6"
+                    android:layout_margin="16dp"
+                    android:text="@string/text_apto"
+                    android:textColor="@color/colorApto"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_status">
+
+                    <TextView
+                        android:id="@+id/tv_message"
+                        style="@style/TextAppearance.MaterialComponents.Body2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Boas notícias, sua documentação foi aprovada pela Metroplan, agora é só entrar em contato com a empresa responsável pelo transporte na sua cidade!"
+                        android:textColor="@color/colorWhite" />
+                </ScrollView>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
