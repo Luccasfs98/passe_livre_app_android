@@ -8,9 +8,10 @@
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:paddingTop="15dp"
+            android:paddingStart="16dp"
             android:paddingBottom="15dp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:text="@string/wait"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -18,7 +19,7 @@
             android:textColor="@android:color/white"
     />
     <ProgressBar
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:id="@+id/progress_circular"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"/>
@@ -26,7 +27,9 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="32dp"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAlignment="center"
+            android:layout_marginBottom="16dp"
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
