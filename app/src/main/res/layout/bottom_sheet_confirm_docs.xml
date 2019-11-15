@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
         android:paddingTop="15dp"
+        android:background="@color/colorPrimary"
         android:paddingBottom="15dp"
-        android:text="Selecione uma opção"
+        android:text="Confirmar envio da documentação!"
         android:textSize="18sp"
         android:paddingStart="16dp"
         android:textStyle="bold"
-        android:background="@color/colorPrimary"
         style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:textColor="@android:color/white"
+        android:textColor="@android:color/white"
     />
     <ImageView
         android:id="@+id/iv"
@@ -27,15 +29,17 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:id="@+id/tv_message"
-            android:text="Escolha uma imagem da sua câmera ou da galeria!"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:text="@string/text_confirm_docs_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:weightSum="10"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="32dp"
 
         android:layout_height="wrap_content">
 
@@ -44,19 +48,18 @@
             android:layout_marginEnd="16dp"
             android:layout_width="0dp"
             android:layout_weight="5"
-            android:id="@+id/bt_camera"
-            android:backgroundTint="@color/colorAccent"
-            android:text="Câmera"
+            android:id="@+id/bt_review"
+            android:backgroundTint="@color/colorCardStatusHeader"
+            android:text="Revisar"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_height="wrap_content"/>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="0dp"
             android:layout_marginEnd="16dp"
-            android:id="@+id/bt_galeria"
-            android:backgroundTint="@color/colorAccent"
+            android:id="@+id/bt_send"
             android:layout_weight="5"
-            android:text="Galeria"
+            android:text="SIM, ENVIAR!"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_height="wrap_content"/>
 

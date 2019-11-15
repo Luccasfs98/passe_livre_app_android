@@ -20,13 +20,13 @@
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
             android:paddingTop="15dp"
-            android:paddingBottom="25dp"
+            android:paddingBottom="15dp"
             android:text="Sua imagem"
             style="@style/TextAppearance.MaterialComponents.Headline5"
             android:textSize="18sp"
             android:paddingStart="16dp"
             android:textStyle="bold"
-            android:background="@drawable/gradient"
+            android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             />
 

@@ -6,23 +6,15 @@ import com.luccas.passelivredocumentos.ui.formcollegeinformation.FormCollegeInfo
 import com.luccas.passelivredocumentos.ui.formpersonaldata.FormPersonalDataFragment
 import com.luccas.passelivredocumentos.ui.formtransportdata.FormTransportDataFragment
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment
+import com.luccas.passelivredocumentos.ui.solicitationmoredetails.SolicitationMoreDetailsFragment
+import com.luccas.passelivredocumentos.ui.terms.TermsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Module
-abstract class FormBuilderModule {
+abstract class TermsModule {
 
     @ContributesAndroidInjector
-    abstract fun formPersonalDataFragment(): FormPersonalDataFragment
-    @ContributesAndroidInjector
-    abstract fun formAddressFragment(): FormAddressFragment
-    @ContributesAndroidInjector
-    abstract fun formCollegeInformation() : FormCollegeInformationFragment
-    @ContributesAndroidInjector
-    abstract fun formTransportDataFragment() : FormTransportDataFragment
-    @ContributesAndroidInjector
-    abstract fun identityDocsFragment(): IdentityDocsFragment
-    @ContributesAndroidInjector
-    abstract fun checkingCopyFragment(): CheckingCopyFragment
+    abstract fun termsFragment(): TermsFragment
 
 }

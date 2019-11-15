@@ -1,6 +1,8 @@
 package com.luccas.passelivredocumentos.ui.formaddress
 
 import android.os.Bundle
+import android.os.Handler
+import androidx.lifecycle.Observer
 
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
@@ -13,7 +15,6 @@ class FormAddressFragment : BaseFragment<FormAddressViewModel>() {
     companion object {
         fun newInstance() = FormAddressFragment()
     }
-
     private  var uf: String =""
     private  var neighborhood: String=""
     private  var city: String=""
@@ -37,14 +38,40 @@ class FormAddressFragment : BaseFragment<FormAddressViewModel>() {
 
         bt_next.setOnClickListener {
             if (validateFields()){
-                activity!!.supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_from_right,R.anim.slide_to_left,R.anim.slide_from_left,R.anim.slide_to_right)
-                    .replace(R.id.container, FormTransportDataFragment.newInstance())
-                    .setReorderingAllowed(true)
-                    .addToBackStack(null)
-                    .commitAllowingStateLoss()
+                showBottomSheetProgress()
+                viewModel.sendFormToApi(sharedPref.getString("userID","")!!,cep,address,complement,city,number,neighborhood,uf).observe(this, Observer{
+                    Handler().postDelayed({
+                        hideBsProgress()
+                        activity!!.supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(
+                                R.anim.slide_from_right,
+                                R.anim.slide_to_left,
+                                R.anim.slide_from_left,
+                                R.anim.slide_to_right
+                            )
+                            .replace(R.id.container, FormTransportDataFragment.newInstance())
+                            .setReorderingAllowed(true)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss()
+                    },3000)
+                })
             }
         }
+        viewModel.getAddress(sharedPref.getString("userID","")!!).observe(this, Observer {
+            if (it!=null){
+                edt_cep.setText(it.cep)
+                edt_address.setText(it.street)
+                edt_complement.setText(it.complement)
+                edt_city.setText(it.city)
+                edt_number.setText(it.homeNumber)
+                edt_neighborhood.setText(it.neighborhood)
+                edt_uf.setText(it.uf)
+            }
+        })
+
+        viewModel.errorMessage.observe(this, Observer {
+            showSnack(it,scrollView)
+        })
 
     }
 
@@ -56,7 +83,7 @@ class FormAddressFragment : BaseFragment<FormAddressViewModel>() {
          city = edt_city.text.toString()
          number = edt_number.text.toString()
          neighborhood = edt_neighborhood.text.toString()
-         uf = edt_neighborhood.text.toString()
+         uf = edt_uf.text.toString()
         if (cep.length!=9){
             til_cep.error = "Cep inválido!"
             isValid = false

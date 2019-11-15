@@ -1,14 +1,29 @@
 package com.luccas.passelivredocumentos.models
 
-import android.net.Uri
-
 /**
 / Created by Luccas Ferreira da Silva on 01 Novembro,2019
 / Company: CroSoften Tecnologia
  **/
-data class User(
-    val id: String,
-    val name: String,
-    val email: String,
-    val type: String
-)
+class User{
+
+
+    var id: String = ""
+    var name: String = ""
+    var email: String = ""
+    var type: String = ""
+
+    constructor(
+        id:String,
+        name:String,
+        email:String,
+        type:String
+    ) : this() {
+        this.id = id
+        this.name = name
+        this.email = email
+        this.type = type
+    }
+
+
+    constructor()
+}

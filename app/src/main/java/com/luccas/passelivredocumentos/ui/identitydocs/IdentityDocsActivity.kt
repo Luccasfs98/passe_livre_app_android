@@ -2,7 +2,6 @@ package com.luccas.passelivredocumentos.ui.identitydocs
 
 import android.os.Bundle
 import com.luccas.passelivredocumentos.R
-import com.luccas.passelivredocumentos.databinding.IdentityDocsBinding
 import com.luccas.passelivredocumentos.ui.base.BaseActivity
 import com.luccas.passelivredocumentos.ui.base.UploadAndRemoveFileViewModel
 

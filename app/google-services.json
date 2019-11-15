@@ -15,11 +15,27 @@
       },
       "oauth_client": [
         {
-          "client_id": "264820843241-4parhh1q8ctmechrntuni5a07pn62okc.apps.googleusercontent.com",
+          "client_id": "264820843241-5561kmpbnqhag8bicgvor6jqio6i95bb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.luccas.passelivredocumentos",
-            "certificate_hash": "b456f0a489ca5db10d7e1275c6a2376cb080f8d7"
+            "certificate_hash": "274a5c91cbefc926a2faeb282a2ca02cd9e2b4cd"
+          }
+        },
+        {
+          "client_id": "264820843241-l6gi2p9db0v137pd9n4d528l01p8rb0g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.luccas.passelivredocumentos",
+            "certificate_hash": "603eaad0c11e4c6545194072929b51c09d676d4c"
+          }
+        },
+        {
+          "client_id": "264820843241-q0394792eh2r4pj7o7rupe2lt9jtu8ku.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.luccas.passelivredocumentos",
+            "certificate_hash": "c75d98fcb6f76c10e454617a7c37e32735e6fe52"
           }
         },
         {

@@ -21,9 +21,12 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.luccas.passelivredocumentos.TermsActivity
+import com.luccas.passelivredocumentos.TermsAndPoliticsActivity
 import com.luccas.passelivredocumentos.databinding.AuthBinding
 import com.luccas.passelivredocumentos.models.User
 import com.luccas.passelivredocumentos.ui.base.BaseActivity
+import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.openActivity
 
 
@@ -47,10 +50,22 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         firebaseAuth = FirebaseAuth.getInstance()
-
         configureGoogleSignIn()
         sign_in_button.setOnClickListener {
+            showBottomSheetProgress()
             signIn()
+        }
+        tv_politics_click.setOnClickListener {
+            openActivity<TermsAndPoliticsActivity>(
+                enterAnim = R.anim.slide_from_right,
+                exitAnim = R.anim.slide_to_left
+            ) { putExtra("type", Common.politics)}
+        }
+        tv_terms_click.setOnClickListener {
+            openActivity<TermsAndPoliticsActivity>(
+                enterAnim = R.anim.slide_from_right,
+                exitAnim = R.anim.slide_to_left
+            ) {putExtra("type", Common.terms)}
         }
     }
     private fun signIn() {
@@ -70,7 +85,6 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
         super.onResume()
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-
             openActivity<MainActivity> (
                 finishWhenOpen = true,
                 enterAnim = R.anim.slide_from_right,
@@ -86,8 +100,8 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
             if (it.isSuccessful) {
                 firebaseAuth = FirebaseAuth.getInstance()
                 verifyIfUserAlreadyExistsInDataBase()
-
             } else {
+                hideBsProgress()
                 Toast.makeText(this, "Login com google falhou, tente novamente mais tarde!", Toast.LENGTH_LONG).show()
             }
         }
@@ -98,9 +112,10 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
              .document(FirebaseAuth.getInstance().currentUser!!.uid)
              .get()
              .addOnSuccessListener {Log.i("teste",it.id)
-                 if (it.getDocumentReference(FirebaseAuth.getInstance().currentUser!!.uid)==null){
+                 if (it["name"]==null){
                      insertNewUserIntoDatabase()
                  } else {
+                     hideBsProgress()
                      sharedPref.edit().putString("userID",it.id).apply()
                      sharedPref.edit().putString("userEmail",it.getString("email")).apply()
                      sharedPref.edit().putString("userName",it.getString("name")).apply()
@@ -112,7 +127,9 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
                      ) {  }
                  }
              }
-             .addOnFailureListener {Log.i("teste",it.localizedMessage) }
+             .addOnFailureListener {Log.i("teste",it.localizedMessage)
+                hideBsProgress()
+             }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -123,6 +140,7 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
             } catch (e: ApiException) {
+                hideBsProgress()
                 Toast.makeText(this, "Erro: "+e.message, Toast.LENGTH_LONG).show()
             }
         }
@@ -153,8 +171,11 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
                     enterAnim =  R.anim.nav_default_pop_enter_anim,
                     exitAnim =  R.anim.nav_default_pop_exit_anim
                 ) {  }
+                hideBsProgress()
             }
-            .addOnFailureListener { Log.e("Error", userData.id) }
+            .addOnFailureListener { Log.e("Error", userData.id)
+                hideBsProgress()
+            }
     }
 
 }

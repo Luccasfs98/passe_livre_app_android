@@ -34,6 +34,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,6 +46,7 @@ import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment
 import com.luccas.passelivredocumentos.ui.login.AuthActivity
 import com.luccas.passelivredocumentos.utils.openActivity
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.dialog_progress.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
@@ -82,6 +84,25 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
         }
         storage = FirebaseStorage.getInstance()
         firestore  = FirebaseFirestore.getInstance()
+    }
+
+    fun hideBsProgress() {
+        if (bsProgress!=null){
+            bsProgress!!.dismiss()
+        }
+    }
+
+    private var sProgress: View? = null
+    private var bsProgress: BottomSheetDialog? = null
+    fun showBottomSheetProgress() {
+        bsProgress  = BottomSheetDialog(ContextThemeWrapper(context!!, R.style.DialogSlideAnim))
+        sProgress = layoutInflater.inflate(R.layout.dialog_progress, null)
+        bsProgress!!.setContentView(sProgress!!)
+        bsProgress!!.window!!.decorView.setBackgroundResource(android.R.color.transparent)
+        bsProgress!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        bsProgress!!.setCancelable(false)
+        bsProgress!!.show()
+        sProgress!!.tv_message.text = "Estamos enviando suas informações..."
     }
 
     private var sheetView: View? = null
@@ -164,6 +185,10 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
             })
             .into(imageView!!)
         return isSuscess!!
+    }
+
+   fun showSnack( it:String, root : View){
+        Snackbar.make(root,it,Snackbar.LENGTH_SHORT).show()
     }
 
 

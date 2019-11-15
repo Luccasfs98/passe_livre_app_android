@@ -6,8 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
+import com.luccas.passelivredocumentos.ui.formpersonaldata.FormPersonalData
+import com.luccas.passelivredocumentos.utils.Common
+import com.luccas.passelivredocumentos.utils.openActivity
 import kotlinx.android.synthetic.main.solicitation_more_details_fragment.*
 
 class SolicitationMoreDetailsFragment : BaseFragment<SolicitationMoreDetailsViewModel>() {
@@ -21,9 +25,30 @@ class SolicitationMoreDetailsFragment : BaseFragment<SolicitationMoreDetailsView
         fun newInstance() = SolicitationMoreDetailsFragment()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        toolbar.setNavigationOnClickListener { activity!!.onBackPressed() }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar.setNavigationOnClickListener {
+            activity!!.finish()
+        }
+        viewModel.getDocuments(sharedPref.getString("userID","")!!).observe(this, Observer {
+            tv_status.text = it.status
+            tv_message.text = "${it.description} \n ${it.reason}"
+            when(it.status){
+                  Common.pendente -> tv_status.setTextColor(resources.getColor(R.color.colorPendente))
+                  Common.apto -> tv_status.setTextColor(resources.getColor(R.color.colorApto))
+                  Common.inapto -> {
+                      tv_status.setTextColor(resources.getColor(R.color.colorInapto))
+                      btn_passe_livre.visibility = View.VISIBLE
+                      btn_passe_livre.setOnClickListener {
+                          context!!.openActivity<FormPersonalData>(finishWhenOpen = true, enterAnim = R.anim.anim_slide_in_up,exitAnim = R.anim.anim_slide_out_down
+                          ) {  }
+                      }
+
+                  }
+                  Common.analise -> tv_status.setTextColor(resources.getColor(R.color.colorAnalise))
+            }
+
+        })
     }
 
 }

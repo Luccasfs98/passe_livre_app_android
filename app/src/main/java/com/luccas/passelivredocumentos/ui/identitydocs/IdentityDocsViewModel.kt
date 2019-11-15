@@ -6,57 +6,99 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
+import com.luccas.passelivredocumentos.models.DocumentsDto
+import com.luccas.passelivredocumentos.utils.Common
 import java.io.File
+import java.lang.Exception
 import javax.inject.Inject
 
 class IdentityDocsViewModel  @Inject constructor(val reference : StorageReference) : ViewModel() {
 
-     var uploadCallback = MutableLiveData<Boolean>()
-     fun uploadImage(filePath:String,file: File,userID:String):MutableLiveData<Boolean>{
-        if(file != null){
-            val ref = reference.child(
-                "$filePath/$userID")
-            val uploadTask = ref.putFile(Uri.fromFile(file))
+    var error = MutableLiveData<String>()
+    var uploadCallback = MutableLiveData<Boolean>()
+    var deleteCallback = MutableLiveData<Boolean>()
+    var documentsResponse = MutableLiveData<DocumentsDto>()
 
-            val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
-                    }
-                }
-                return@Continuation ref.downloadUrl
-            })?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val downloadUri = task.result
-                    uploadCallback.value = task.isComplete
-                    //addUploadRecordToDb(downloadUri.toString())
-                } else {
-                    Log.i("FAILURE UPLOAD",task.exception.toString())
-                }
-            }?.addOnFailureListener{
-                Log.i("FAILURE UPLOAD",it.localizedMessage.toString())
+    fun getDocuments(userID:String): MutableLiveData<DocumentsDto> {
+        documentsResponse = MutableLiveData()
+        val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
+        instance
+            .collection(Common.UsersCollection)
+            .document(userID)
+            .collection(Common.DocumentsCollection)
+            .document(Common.DocumentsDocument)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                documentsResponse.value = documentSnapshot.toObject(DocumentsDto::class.java)
             }
-        }else{
-            //Toast.makeText(this, "Please Upload an Image", Toast.LENGTH_SHORT).show()
-        }
-         return uploadCallback
+            .addOnFailureListener {
+                error.value = it.localizedMessage
+            }
+
+        return documentsResponse
     }
-     fun removeImage(filePath:String,userID:String):MutableLiveData<Boolean>{
-             val ref = reference.child(
-                 "$filePath/$userID")
-             val uploadTask = ref.delete().addOnCompleteListener { task ->
-                 if (task.isSuccessful) {
-                     val downloadUri = task.result
-                     uploadCallback.value = task.isComplete
-                     //addUploadRecordToDb(downloadUri.toString())
-                 } else {
-                     Log.i("FAILURE DELETE",task.exception.toString())
-                 }
-             }?.addOnFailureListener{
-                 Log.i("FAILURE DELETE",it.localizedMessage.toString())
-             }
-         return uploadCallback
-     }
+    fun uploadImage(filePath:String, uri: Uri, userID:String) {
+        uploadCallback= MutableLiveData()
+        val ref = reference.child(
+            "$filePath/$userID")
+        val uploadTask = ref.putFile(uri)
+        uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    error.value = it.message
+                    throw it
+                }
+            }
+            return@Continuation ref.downloadUrl
+        }).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                savePathIntoUser(task.result.toString(),userID,filePath)
+            } else {
+                try {
+                    uploadCallback.value = false
+                    error.value = task.exception!!.message
+                } catch (e : Exception){
+                    error.value = e.message
+                }
+            }
+        }
+    }
+
+    private fun savePathIntoUser(result: String?, userID: String,fileName:String) {
+        val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
+        val data = hashMapOf(fileName to result)
+        instance.collection(Common.UsersCollection).document(userID).collection(Common.DocumentsCollection).document(Common.DocumentsDocument)
+            .set(data,SetOptions.merge())
+            .addOnSuccessListener {
+                uploadCallback.value = true
+            }
+            .addOnFailureListener {
+                uploadCallback.value = false
+                error.value = it.message
+            }
+    }
+    fun removeImage(filePath:String,userID:String): MutableLiveData<Boolean> {
+        deleteCallback= MutableLiveData()
+        val ref = reference.child(
+            "$filePath/$userID")
+        val uploadTask = ref.delete().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val downloadUri = task.result
+                deleteCallback.value = task.isComplete
+                //addUploadRecordToDb(downloadUri.toString())
+            } else {
+                error.value = task.exception!!.message
+                Log.i("FAILURE DELETE",task.exception.toString())
+            }
+        }?.addOnFailureListener{
+            error.value = it.message
+            Log.i("FAILURE DELETE",it.localizedMessage.toString())
+        }
+        return deleteCallback
+    }
 }
+

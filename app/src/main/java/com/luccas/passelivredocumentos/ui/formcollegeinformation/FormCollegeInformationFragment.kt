@@ -2,6 +2,7 @@ package com.luccas.passelivredocumentos.ui.formcollegeinformation
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -58,13 +59,16 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
                     level,
                     turno
                 ).observe(this, Observer {
-                    hideBsProgress()
-                    activity!!.supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_from_right,R.anim.slide_to_left,R.anim.slide_from_left,R.anim.slide_to_right)
-                        .replace(R.id.container, FormAddressFragment.newInstance())
-                        .setReorderingAllowed(true)
-                        .addToBackStack(null)
-                        .commitAllowingStateLoss()
+                    Handler().postDelayed({
+                        hideBsProgress()
+                        activity!!.supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_from_right,R.anim.slide_to_left,R.anim.slide_from_left,R.anim.slide_to_right)
+                            .replace(R.id.container, FormAddressFragment.newInstance())
+                            .setReorderingAllowed(true)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss()
+                    },3000)
+
                 })
             }
         }
@@ -223,22 +227,5 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
         return isValid
     }
 
-    private fun hideBsProgress() {
-        if (bsProgress!=null){
-            bsProgress!!.dismiss()
-        }
-    }
 
-    private var sProgress: View? = null
-    private var bsProgress: BottomSheetDialog? = null
-    private fun showBottomSheetProgress() {
-        bsProgress  = BottomSheetDialog(ContextThemeWrapper(context!!, R.style.DialogSlideAnim))
-        sProgress = layoutInflater.inflate(R.layout.dialog_progress, null)
-        bsProgress!!.setContentView(sProgress!!)
-        bsProgress!!.window!!.decorView.setBackgroundResource(android.R.color.transparent)
-        bsProgress!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        bsProgress!!.setCancelable(false)
-        bsProgress!!.show()
-        sProgress!!.tv_message.text = "Estamos enviando suas informações..."
-    }
 }

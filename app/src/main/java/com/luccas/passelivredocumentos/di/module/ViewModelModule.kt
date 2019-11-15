@@ -12,6 +12,9 @@ import com.luccas.passelivredocumentos.ui.formcollegeinformation.FormCollegeInfo
 import com.luccas.passelivredocumentos.ui.formpersonaldata.FormPersonalDataViewModel
 import com.luccas.passelivredocumentos.ui.formtransportdata.FormTransportDataViewModel
 import com.luccas.passelivredocumentos.ui.home.HomeViewModel
+import com.luccas.passelivredocumentos.ui.solicitationmoredetails.SolicitationMoreDetailsViewModel
+import com.luccas.passelivredocumentos.ui.terms.TermsViewModel
+import com.luccas.passelivredocumentos.ui.termsandpolitics.TermsAndPoliticsViewModel
 import com.luccas.passelivredocumentos.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module
@@ -79,6 +82,21 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(HomeViewModel::class)
     abstract fun homeViewModel(homeViewModel: HomeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SolicitationMoreDetailsViewModel::class)
+    abstract fun solicitationMoreDetailsViewModel(homeViewModel: SolicitationMoreDetailsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TermsViewModel::class)
+    abstract fun termsViewModel(termsViewModel: TermsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TermsAndPoliticsViewModel::class)
+    abstract fun termsAndPoliticsViewModel(termsAndPoliticsViewModel: TermsAndPoliticsViewModel): ViewModel
 
 
     @Binds

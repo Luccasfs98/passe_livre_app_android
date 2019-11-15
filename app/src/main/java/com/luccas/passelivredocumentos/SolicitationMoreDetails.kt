@@ -1,14 +1,16 @@
 package com.luccas.passelivredocumentos
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.luccas.passelivredocumentos.ui.base.BaseActivity
 import com.luccas.passelivredocumentos.ui.solicitationmoredetails.SolicitationMoreDetailsFragment
+import com.luccas.passelivredocumentos.ui.solicitationmoredetails.SolicitationMoreDetailsViewModel
 
-class SolicitationMoreDetails : AppCompatActivity() {
+class SolicitationMoreDetails : BaseActivity<SolicitationMoreDetailsViewModel>() {
 
+    override fun getViewModel() = SolicitationMoreDetailsViewModel::class.java
+    override val layoutRes = R.layout.solicitation_more_details_activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.solicitation_more_details_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, SolicitationMoreDetailsFragment.newInstance())

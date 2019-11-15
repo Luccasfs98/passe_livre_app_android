@@ -9,20 +9,31 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: "kotlin-kapt"
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\lucca\\OneDrive\\Área de Trabalho\\passe_livre_keystire.jks')
+            storePassword 'passelivrekey'
+            keyAlias = 'key0'
+            keyPassword 'passelivrekey'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.luccas.passelivredocumentos"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 2
-        versionName "1.1"
+        versionCode 7
+        versionName "1.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            multiDexEnabled = false
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -55,6 +66,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 
     implementation 'com.google.firebase:firebase-firestore:21.2.1'
     implementation 'com.google.firebase:firebase-analytics:17.2.1'

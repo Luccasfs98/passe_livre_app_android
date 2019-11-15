@@ -28,7 +28,8 @@ class FormPersonalDataViewModel @Inject constructor() : ViewModel() {
         success = MutableLiveData()
         val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-        instance.collection("users").document(idUser).collection("personalDataCollection").document("personalDataDocument")
+        instance.collection(UsersCollection).document(idUser).collection(PersonalDataCollection).document(
+            PersonalDataDocument)
             .set(PersonalDataDto(name,phone,nameFather,nameMother,dateBirthday,cpf,sex,type))
             .addOnSuccessListener {
                 success.value = true

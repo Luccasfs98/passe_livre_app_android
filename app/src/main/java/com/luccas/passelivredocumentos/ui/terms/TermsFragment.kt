@@ -1,32 +1,25 @@
 package com.luccas.passelivredocumentos.ui.terms
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.luccas.passelivredocumentos.R
+import com.luccas.passelivredocumentos.ui.base.BaseFragment
 
-class TermsFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = TermsFragment()
-    }
-
-    private lateinit var viewModel: TermsViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.terms_fragment, container, false)
-    }
+class TermsFragment : BaseFragment<TermsViewModel>() {
+    override val layoutRes = R.layout.terms_fragment
+    override fun getViewModel() = TermsViewModel::class.java
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(TermsViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        /*viewModel.getTerms(activity!!.intent.getStringExtra("type")!!).observe(this, Observer {
+            progress_bar.visibility = View.GONE
+            tv_text.text = it
+        })
+
+        viewModel.error.observe(this, Observer {
+            Snackbar.make(scrollView,it,Snackbar.LENGTH_SHORT).show()
+            progress_bar.visibility = View.GONE
+        })*/
     }
 
 }

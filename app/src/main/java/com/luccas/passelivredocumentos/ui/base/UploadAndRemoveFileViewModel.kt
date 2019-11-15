@@ -21,12 +21,12 @@ class UploadAndRemoveFileViewModel @Inject constructor(val reference : StorageRe
     var uploadCallback = MutableLiveData<Boolean>()
     var deleteCallback = MutableLiveData<Boolean>()
 
-    fun uploadImage(filePath:String, file: File, userID:String): MutableLiveData<Boolean> {
+    fun uploadImage(filePath:String, uri: Uri, userID:String): MutableLiveData<Boolean> {
         uploadCallback= MutableLiveData()
-        if(file != null){
+        if(uri != null){
             val ref = reference.child(
                 "$filePath/$userID")
-            val uploadTask = ref.putFile(Uri.fromFile(file))
+            val uploadTask = ref.putFile(uri)
             uploadTask.addOnFailureListener {
                 // Handle unsuccessful uploads
             }.addOnSuccessListener {
@@ -56,5 +56,6 @@ class UploadAndRemoveFileViewModel @Inject constructor(val reference : StorageRe
         }
         return deleteCallback
     }
+
 
 }

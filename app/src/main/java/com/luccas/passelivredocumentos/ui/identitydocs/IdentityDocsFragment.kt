@@ -38,6 +38,10 @@ import com.luccas.passelivredocumentos.databinding.IdentityDocsFragmentBinding
 import com.luccas.passelivredocumentos.ui.checkingcopy.CheckingCopyActivity
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
 import com.luccas.passelivredocumentos.ui.base.UploadAndRemoveFileViewModel
+import com.luccas.passelivredocumentos.utils.Common
+import com.luccas.passelivredocumentos.utils.Common.Companion.Front_of_Identity
+import com.luccas.passelivredocumentos.utils.Common.Companion.Profile_Pic
+import com.luccas.passelivredocumentos.utils.Common.Companion.Verse_of_Identity
 import com.luccas.passelivredocumentos.utils.ImageHelper
 import com.luccas.passelivredocumentos.utils.openActivity
 import kotlinx.android.synthetic.main.identity_docs_fragment.*
@@ -48,7 +52,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPermissions.PermissionCallbacks {
+class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissions.PermissionCallbacks {
 
     private var count: Int = 1
     private lateinit var filePath: String
@@ -57,16 +61,13 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
     private var isIdentityVerseUploaded: Boolean = false
 
     override val layoutRes = R.layout.identity_docs_fragment
-    override fun getViewModel() = UploadAndRemoveFileViewModel::class.java
+    override fun getViewModel() = IdentityDocsViewModel::class.java
 
     companion object {
         fun newInstance() = IdentityDocsFragment()
         const val CODE_FOR_GALLERY = 3455
         const val CODE_FOR_CAMERA = 3453
         const val PERMANENTLY_DENIED_REQUEST_CODE = 2345
-        const val PROFILE_PIC_PATH = "foto_perfil"
-        const val IDENTITY_FRONT_PATH = "identidade_frente"
-        const val IDENTITY_VERSE_PATH = "identidade_verso"
     }
 
     private  var file: File?=null
@@ -81,37 +82,37 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
         toolbar.setNavigationOnClickListener {
             activity!!.onBackPressed()
         }
-        cv_profile_pic.setOnClickListener {
+        iv_profile_pic.setOnClickListener {
             if(isProfilePicUploaded){
                 showBottomSheetImage()
-                setImageIntoBottomSheet(PROFILE_PIC_PATH,R.drawable.ic_profile_pic_default)
+                setImageIntoBottomSheet(Profile_Pic,R.drawable.ic_profile_pic_default)
             } else{
-                filePath = PROFILE_PIC_PATH
+                filePath = Profile_Pic
                 selectPhoto()
             }
         }
-        cv_id_front.setOnClickListener{
+        iv_id_front.setOnClickListener{
             if(isIdentityFrontUploaded){
                 showBottomSheetImage()
-                setImageIntoBottomSheet(IDENTITY_FRONT_PATH,R.drawable.ic_add)
+                setImageIntoBottomSheet(Front_of_Identity,R.drawable.ic_add)
             } else{
-                filePath = IDENTITY_FRONT_PATH
+                filePath = Front_of_Identity
                 selectPhoto()
             }
         }
-        cv_id_verse.setOnClickListener{
+        iv_id_verse.setOnClickListener{
             if(isIdentityVerseUploaded){
                 showBottomSheetImage()
-                setImageIntoBottomSheet(IDENTITY_VERSE_PATH,R.drawable.ic_add)
+                setImageIntoBottomSheet(Verse_of_Identity,R.drawable.ic_add)
             } else{
-                filePath = IDENTITY_VERSE_PATH
+                filePath = Verse_of_Identity
                 selectPhoto()
             }
         }
 
-        cv_profile_pic.setOnLongClickListener {
+        iv_profile_pic.setOnLongClickListener {
             if (isProfilePicUploaded){
-                filePath = PROFILE_PIC_PATH
+                filePath = Profile_Pic
                 showDialogRemoveImage(filePath,iv_profile_pic,R.drawable.ic_profile_pic_default).observe(this, androidx.lifecycle.Observer { isProfilePicUploaded = !it })
                 true
             }else{
@@ -119,9 +120,9 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
             }
         }
 
-        cv_id_front.setOnLongClickListener {
+        iv_id_front.setOnLongClickListener {
             if (isIdentityFrontUploaded){
-                filePath = IDENTITY_FRONT_PATH
+                filePath = Front_of_Identity
                 showDialogRemoveImage(filePath,iv_id_front,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer { isIdentityFrontUploaded = !it })
                 true
             }else{
@@ -129,23 +130,20 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
             }
         }
 
-        cv_id_verse.setOnLongClickListener {
+        iv_id_verse.setOnLongClickListener {
             if (isIdentityVerseUploaded){
-                filePath = IDENTITY_VERSE_PATH
+                filePath = Verse_of_Identity
                 showDialogRemoveImage(filePath,iv_id_verse,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer {isIdentityVerseUploaded = !it })
                 true
             }else{
                 false
             }
         }
-
-        setupDocs(PROFILE_PIC_PATH, iv_profile_pic, R.drawable.ic_profile_pic_default).observe(this, androidx.lifecycle.Observer {
-            isProfilePicUploaded = it
-        })
-        setupDocs(IDENTITY_VERSE_PATH,iv_id_verse,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer {
+        setupDocs(Profile_Pic, iv_profile_pic, R.drawable.ic_profile_pic_default).observe(this, androidx.lifecycle.Observer { isProfilePicUploaded = it})
+        setupDocs(Verse_of_Identity,iv_id_verse,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer {
             isIdentityVerseUploaded = it
         })
-        setupDocs(IDENTITY_FRONT_PATH,iv_id_front,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer {
+        setupDocs(Front_of_Identity,iv_id_front,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer {
             isIdentityFrontUploaded = it
         })
 
@@ -205,32 +203,29 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            val uri: Uri
-
             when(requestCode) {
                 CODE_FOR_GALLERY -> {
-                    uri = data!!.data!!
-                    this.file = File(getPath(uri))
-                    val any = try {
-                            viewModel.uploadImage(filePath,this.file!!,sharedPref.getString("userID","")!!).observe(this, androidx.lifecycle.Observer{
-                                Log.i("COUNT",count.toString())
-                                count+=1
-                                setPathIntoView()
-                            })
-                        } catch (e: Exception) {
-                            Toast.makeText(context!!, "Não foi possível obter a imagem", Toast.LENGTH_LONG).show()
-                    }
-                }
-                CODE_FOR_CAMERA -> {
-                    file = File(cameraFilePath)
-                    val any = try {
-                        viewModel.uploadImage(filePath,this.file!!,sharedPref.getString("userID","")!!).observe(this, androidx.lifecycle.Observer{
-                            Log.i("COUNT",count.toString())
-                            count+=1
+                    val uri: Uri = data!!.data!!
+
+                    try {
+                        viewModel.uploadImage(filePath,uri,sharedPref.getString("userID","")!!)
+                        viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
                             setPathIntoView()
                         })
                     } catch (e: Exception) {
-                        Toast.makeText(context!!, "Não foi possível obter a imagem", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context!!, "Não foi possível enviar a imagem. "+e.message, Toast.LENGTH_LONG).show()
+                    }
+
+                }
+                CODE_FOR_CAMERA -> {
+                    file = File(cameraFilePath)
+                    try {
+                        viewModel.uploadImage(filePath,Uri.fromFile(file),sharedPref.getString("userID","")!!)
+                        viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
+                            setPathIntoView()
+                        })
+                    } catch (e: Exception) {
+                        Toast.makeText(context!!, "Não foi possível enviar a imagem. "+e.message, Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -240,17 +235,17 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
     private fun setPathIntoView() {
         lateinit var imageView : ImageView
          var error : Int? = 0
-        if (filePath == PROFILE_PIC_PATH){
+        if (filePath == Profile_Pic){
             imageView = iv_profile_pic
             isProfilePicUploaded = true
             error = R.drawable.ic_profile_pic_default
         }
-        if (filePath == IDENTITY_FRONT_PATH){
+        if (filePath == Front_of_Identity){
             isIdentityFrontUploaded = true
             error = R.drawable.ic_add
             imageView = iv_id_front
         }
-        if (filePath == IDENTITY_VERSE_PATH){
+        if (filePath == Verse_of_Identity){
             imageView = iv_id_verse
             error = R.drawable.ic_add
             isIdentityVerseUploaded = true
@@ -294,6 +289,12 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        Log.i("PERMISSÕES CONCEDIDAS", perms.toString())
+        if (requestCode== CODE_FOR_CAMERA){
+            afterCameraGranted()
+        } else {
+            afterGalleryGranted()
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -314,10 +315,6 @@ class IdentityDocsFragment : BaseFragment<UploadAndRemoveFileViewModel>(),EasyPe
         galleryIntent.type = "image/*"
         startActivityForResult(galleryIntent, CODE_FOR_GALLERY)
     }
-
-
-    private var sheetView: View? = null
-    private lateinit var bottomSheet: BottomSheetDialog
 
     private var sheetViewRemoveImage: View? = null
     private lateinit var bottomSheetRemoveImage: BottomSheetDialog
