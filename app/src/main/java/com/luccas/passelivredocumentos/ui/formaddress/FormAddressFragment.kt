@@ -3,10 +3,12 @@ package com.luccas.passelivredocumentos.ui.formaddress
 import android.os.Bundle
 import android.os.Handler
 import androidx.lifecycle.Observer
+import com.google.firebase.auth.FirebaseAuth
 
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
 import com.luccas.passelivredocumentos.ui.formtransportdata.FormTransportDataFragment
+import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.MaskUtils
 import kotlinx.android.synthetic.main.form_address_fragment.*
 
@@ -39,7 +41,20 @@ class FormAddressFragment : BaseFragment<FormAddressViewModel>() {
         bt_next.setOnClickListener {
             if (validateFields()){
                 showBottomSheetProgress()
-                viewModel.sendFormToApi(sharedPref.getString("userID","")!!,cep,address,complement,city,number,neighborhood,uf).observe(this, Observer{
+                viewModel.sendFormToApi(FirebaseAuth.getInstance().currentUser!!.uid!!,cep,address,complement,city,number,neighborhood,uf).observe(this, Observer{
+
+                    val edit = sharedPref.edit()
+
+                    edit.putString(Common.cep,cep)
+                    edit.putString(Common.street,address)
+                    edit.putString(Common.complement,complement)
+                    edit.putString(Common.city,city)
+                    edit.putString(Common.homeNumber,number)
+                    edit.putString(Common.neighborhood,neighborhood)
+                    edit.putString(Common.uf,uf)
+
+                    edit.apply()
+
                     Handler().postDelayed({
                         hideBsProgress()
                         activity!!.supportFragmentManager.beginTransaction()
@@ -57,7 +72,7 @@ class FormAddressFragment : BaseFragment<FormAddressViewModel>() {
                 })
             }
         }
-        viewModel.getAddress(sharedPref.getString("userID","")!!).observe(this, Observer {
+        viewModel.getAddress(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, Observer {
             if (it!=null){
                 edt_cep.setText(it.cep)
                 edt_address.setText(it.street)

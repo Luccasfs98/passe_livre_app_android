@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.lifecycle.Observer
+import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsActivity
+import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.openActivity
 import kotlinx.android.synthetic.main.form_transport_data_fragment.*
 
@@ -35,14 +37,26 @@ class FormTransportDataFragment : BaseFragment<FormTransportDataViewModel>() {
         bt_next.setOnClickListener {
             if(validateFields()){
                 showBottomSheetProgress()
-                viewModel.sendFormToApi(sharedPref.getString("userID","")!!,transportName,line,alreadyHavePasseLivre,useIntegration,prouniScholarshipHolder)
-                Handler().postDelayed({
-                    hideBsProgress()
-                    activity!!.openActivity<IdentityDocsActivity> (
-                        enterAnim = R.anim.slide_from_right,
-                        exitAnim = R.anim.slide_from_left
-                    ){  }
-                },3000)
+                viewModel.sendFormToApi(FirebaseAuth.getInstance().currentUser!!.uid,transportName,line,alreadyHavePasseLivre,useIntegration,prouniScholarshipHolder).observe(this, Observer {
+                    val edit = sharedPref.edit()
+                    edit.putString(Common.transportName,transportName)
+                    edit.putString(Common.line,line)
+                    edit.putBoolean(Common.alreadyHavePasseLivre,alreadyHavePasseLivre!!)
+                    edit.putBoolean(Common.useIntegration,useIntegration!!)
+                    edit.putBoolean(Common.prouniScholarshipHolder,prouniScholarshipHolder!!)
+                    edit.apply()
+
+                    Handler().postDelayed({
+                        hideBsProgress()
+                        activity!!.openActivity<IdentityDocsActivity> (
+                            enterAnim = R.anim.slide_from_right,
+                            exitAnim = R.anim.slide_from_left
+                        ){  }
+                    },2000)
+
+
+
+                })
             }
         }
 
@@ -62,7 +76,7 @@ class FormTransportDataFragment : BaseFragment<FormTransportDataViewModel>() {
             }
         }
 
-        viewModel.getTransportData(sharedPref.getString("userID","")!!).observe(this, Observer {
+        viewModel.getTransportData(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, Observer {
 
             progress_bar.visibility = View.GONE
             ln_main.visibility = View.VISIBLE

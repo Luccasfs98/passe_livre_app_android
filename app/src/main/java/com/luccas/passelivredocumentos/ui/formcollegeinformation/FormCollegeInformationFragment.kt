@@ -1,25 +1,21 @@
 package com.luccas.passelivredocumentos.ui.formcollegeinformation
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.lifecycle.Observer
-import com.google.android.gms.common.util.ArrayUtils
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
 import com.luccas.passelivredocumentos.ui.formaddress.FormAddressFragment
+import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.MaskUtils
-import kotlinx.android.synthetic.main.dialog_progress.view.*
 import kotlinx.android.synthetic.main.form_college_information_fragment.*
 import java.lang.Exception
+
+
 
 class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewModel>() {
 
@@ -50,7 +46,7 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
             if (validateForm()){
                 showBottomSheetProgress()
                 viewModel.sendFormToApi(
-                    sharedPref.getString("userID","")!!,
+                    FirebaseAuth.getInstance().currentUser!!.uid,
                     collegeName,
                     periodStart,
                     periodEnd,
@@ -59,6 +55,20 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
                     level,
                     turno
                 ).observe(this, Observer {
+                    val edit = sharedPref.edit()
+                    edit.putString(Common.collegeName,collegeName)
+                    edit.putString(Common.semesterPeriodStart,periodStart)
+                    edit.putString(Common.semesterPeriodEnd,periodEnd)
+                    edit.putString(Common.schoolSemester,schoolSemester)
+                    val setDays = HashSet<String>()
+                    val setTurns = HashSet<String>()
+                    setDays.addAll(days)
+                    edit.putStringSet(Common.schoolDays,setDays)
+                    setTurns.addAll(turno)
+                    edit.putString(Common.level,level)
+                    edit.putStringSet(Common.turn,setTurns)
+                    edit.apply()
+
                     Handler().postDelayed({
                         hideBsProgress()
                         activity!!.supportFragmentManager.beginTransaction()
@@ -90,22 +100,22 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
 
             if(isChecked){
                 when(checkedId){
-                    R.id.bt_segunda -> days!!.add("Segunda")
-                    R.id.bt_terca -> days!!.add("Terça")
-                    R.id.bt_quarta -> days!!.add("Quarta")
-                    R.id.bt_quinta -> days!!.add("Quinta")
-                    R.id.bt_sexta -> days!!.add("Sexta")
-                    R.id.bt_sabado -> days!!.add("Sábado")
+                    R.id.bt_segunda -> days.add("Segunda")
+                    R.id.bt_terca -> days.add("Terça")
+                    R.id.bt_quarta -> days.add("Quarta")
+                    R.id.bt_quinta -> days.add("Quinta")
+                    R.id.bt_sexta -> days.add("Sexta")
+                    R.id.bt_sabado -> days.add("Sábado")
                 }
             } else {
                 try {
                     when(checkedId){
-                        R.id.bt_segunda -> days!!.remove("Segunda")
-                        R.id.bt_terca -> days!!.remove("Terça")
-                        R.id.bt_quarta -> days!!.remove("Quarta")
-                        R.id.bt_quinta -> days!!.remove("Quinta")
-                        R.id.bt_sexta -> days!!.remove("Sexta")
-                        R.id.bt_sabado -> days!!.remove("Sábado")
+                        R.id.bt_segunda -> days.remove("Segunda")
+                        R.id.bt_terca -> days.remove("Terça")
+                        R.id.bt_quarta -> days.remove("Quarta")
+                        R.id.bt_quinta -> days.remove("Quinta")
+                        R.id.bt_sexta -> days.remove("Sexta")
+                        R.id.bt_sabado -> days.remove("Sábado")
                     }
                 } catch (exception : Exception){
                     Log.i("error: ",exception.localizedMessage)
@@ -132,7 +142,7 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
             }
         }
 
-        viewModel.getEducationalEstablishment(sharedPref.getString("userID","")!!).observe(this, Observer {
+        viewModel.getEducationalEstablishment(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, Observer {
             progress_bar.visibility = View.GONE
             ln_main.visibility = View.VISIBLE
             if (it!=null){

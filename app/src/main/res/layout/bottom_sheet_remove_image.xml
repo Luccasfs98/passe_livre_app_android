@@ -10,14 +10,13 @@
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
             android:paddingTop="15dp"
-            android:paddingBottom="25dp"
+            android:paddingBottom="15dp"
             android:text="Remover imagem"
             android:textSize="18sp"
+            android:background="@color/colorPrimary"
             android:paddingStart="16dp"
             android:textStyle="bold"
-        style="@style/TextAppearance.MaterialComponents.Headline5"
-
-        android:background="@drawable/gradient"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:textColor="@android:color/white"
     />
     <ImageView

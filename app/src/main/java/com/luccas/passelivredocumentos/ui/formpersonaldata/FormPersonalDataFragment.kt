@@ -12,10 +12,12 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.FormCollegeInformationActivity
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
 import com.luccas.passelivredocumentos.ui.formcollegeinformation.FormCollegeInformationFragment
+import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.MaskUtils
 import com.luccas.passelivredocumentos.utils.openActivity
 import kotlinx.android.synthetic.main.dialog_progress.view.*
@@ -74,7 +76,19 @@ class FormPersonalDataFragment : BaseFragment<FormPersonalDataViewModel>() {
                 } else {
                     "Segunda via"
                 }
-                viewModel.sendFormToApi(sharedPref.getString("userID","")!!,name,phone,nameFather,nameMother,dateBirthday,cpf,sex,type).observe(this, Observer {
+                viewModel.sendFormToApi(FirebaseAuth.getInstance().currentUser!!.uid,name,phone,nameFather,nameMother,dateBirthday,cpf,sex,type).observe(this, Observer {
+
+                    val edit = sharedPref.edit()
+                    edit.putString(Common.fullname,name)
+                    edit.putString(Common.phone,phone)
+                    edit.putString(Common.nameFather,nameFather)
+                    edit.putString(Common.nameMother,nameMother)
+                    edit.putString(Common.dateBirthday,dateBirthday)
+                    edit.putString(Common.cpf,cpf)
+                    edit.putString(Common.sex,sex)
+                    edit.putString(Common.type,type)
+                    edit.apply()
+
                     Handler().postDelayed({
                         hideBsProgress()
                         activity!!.supportFragmentManager.beginTransaction()
@@ -93,7 +107,7 @@ class FormPersonalDataFragment : BaseFragment<FormPersonalDataViewModel>() {
             }
         }
 
-        viewModel.getPersonalData(sharedPref.getString("userID","")!!).observe(this, Observer {
+        viewModel.getPersonalData(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, Observer {
             if(it!=null) {
                 edt_name.setText(it.name)
                 edt_father_name.setText(it.nameFather)

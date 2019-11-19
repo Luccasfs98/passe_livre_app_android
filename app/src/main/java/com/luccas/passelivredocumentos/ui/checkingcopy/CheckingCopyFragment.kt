@@ -8,24 +8,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.BuildConfig
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.MainActivity
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
-import com.luccas.passelivredocumentos.ui.base.UploadAndRemoveFileViewModel
 import com.luccas.passelivredocumentos.ui.formcollegeinformation.FormCollegeInformationFragment
-import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment.Companion.CODE_FOR_CAMERA
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment.Companion.CODE_FOR_GALLERY
 import com.luccas.passelivredocumentos.utils.Common
@@ -101,7 +97,7 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
             choicePdfOrImg()
         }
 
-        viewModel.getTransportData(sharedPref.getString("userID","")!!).observe(this, androidx.lifecycle.Observer {
+        viewModel.getTransportData(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, androidx.lifecycle.Observer {
             if (it!=null){
                 if (it.prouniScholarshipHolder!!){
                     tv_id_verse.text = "Comprovante de bolsa ProUni"
@@ -116,26 +112,31 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
             progress_bar.visibility = View.GONE
         })
 
-        viewModel.getDocuments(sharedPref.getString("userID","")!!).observe(this, androidx.lifecycle.Observer {
+        viewModel.getDocuments(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, androidx.lifecycle.Observer {
 
             if (it!=null){
                 if (it.proof_of_address.isNotEmpty()){
+                    sharedPref.edit().putString(Common.proof_of_address,it.proof_of_address).apply()
                     iv_address.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
                     isAddressUploaded = true
                 }
                 if (it.proof_of_income.isNotEmpty()){
+                    sharedPref.edit().putString(Common.proof_of_income,it.proof_of_income).apply()
                     iv_income_proof.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
                     isIncomeUploaded = true
                 }
                 if (it.card_voucher.isNotEmpty()){
+                    sharedPref.edit().putString(Common.card_voucher,it.card_voucher).apply()
                     iv_add_small_card.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
                     isCardUploaded = true
                 }
                 if (it.voucher_frequency.isNotEmpty()){
+                    sharedPref.edit().putString(Common.voucher_frequency,it.voucher_frequency).apply()
                     iv_frequency.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
                     isFrequencyUploaded = true
                 }
                 if (it.registration_certificate.isNotEmpty()){
+                    sharedPref.edit().putString(Common.registration_certificate,it.registration_certificate).apply()
                     iv_register_certificate.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
                     isRegisterCertificate = true
                 }
@@ -155,8 +156,17 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
         bsConfirmDocs.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         bsConfirmDocs.setCancelable(true)
         sheetConfirmDocs!!.findViewById<MaterialButton>(R.id.bt_send).setOnClickListener {
-            viewModel.confirmDocs(sharedPref.getString("userID","")!!).observe(this,androidx.lifecycle.Observer {
+            viewModel.confirmDocs(FirebaseAuth.getInstance().currentUser!!.uid,sharedPref).observe(this,androidx.lifecycle.Observer {
                 activity!!.finishAffinity()
+                val userID = sharedPref.getString("userID", "")
+                val email = sharedPref.getString("userEmail", "")
+                val name = sharedPref.getString("userName", "")
+                val url = sharedPref.getString("photoUrl", "")
+                sharedPref.edit().clear().apply()
+                sharedPref.edit().putString("userID",userID).apply()
+                sharedPref.edit().putString("userEmail",email).apply()
+                sharedPref.edit().putString("userName",name).apply()
+                sharedPref.edit().putString("photoUrl",url).apply()
                 activity!!.openActivity<MainActivity> (
                     finishWhenOpen = true,
                     exitAnim = R.anim.slide_to_left

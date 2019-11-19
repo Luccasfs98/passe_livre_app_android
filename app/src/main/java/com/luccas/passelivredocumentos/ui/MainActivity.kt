@@ -18,6 +18,9 @@ import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.databinding.MainBinding
 import com.luccas.passelivredocumentos.ui.base.BaseActivity
 import com.luccas.passelivredocumentos.ui.login.AuthActivity
+import com.luccas.passelivredocumentos.utils.Common
+import com.luccas.passelivredocumentos.utils.Common.Companion.email
+import com.luccas.passelivredocumentos.utils.Common.Companion.fullname
 import com.luccas.passelivredocumentos.utils.openActivity
 
 class MainActivity : BaseActivity<MainViewModel>() {
@@ -60,8 +63,8 @@ class MainActivity : BaseActivity<MainViewModel>() {
             .into(headerView.findViewById(R.id.iv_profile_pic)
         )
 
-        headerView.findViewById<TextView>(R.id.tv_email).text = sharedPref.getString("userEmail","")
-        headerView.findViewById<TextView>(R.id.tv_title).text = sharedPref.getString("userName","")
+        headerView.findViewById<TextView>(R.id.tv_email).text = sharedPref.getString(email,"")
+        headerView.findViewById<TextView>(R.id.tv_title).text = sharedPref.getString(fullname,"")
 
     }
 

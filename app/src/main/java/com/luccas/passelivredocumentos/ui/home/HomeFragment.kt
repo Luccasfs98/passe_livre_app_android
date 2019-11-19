@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.SolicitationMoreDetails
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
@@ -27,10 +28,10 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
                 exitAnim = R.anim.anim_slide_out_up
             ) { }
         }
-        getDocsStatus()
+        getSolicitationStatus()
 
         swipe.setOnRefreshListener {
-            getDocsStatus()
+            getSolicitationStatus()
             cv_container.visibility = View.GONE
         }
 
@@ -41,13 +42,12 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             Snackbar.make(swipe,it,Snackbar.LENGTH_SHORT).show()
         })
     }
-    fun getDocsStatus(){
-        viewModel.getUserDocStatus(sharedPref.getString("userID","")!!).observe(this, Observer {
+    fun getSolicitationStatus(){
+        viewModel.getUserDocStatus(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, Observer {
             progress_bar.visibility = View.GONE
             swipe.isRefreshing = false
             cv_container.visibility = View.VISIBLE
             if (it!=null){
-                if (it.sent_documents!!){
                     cv_status_docs.visibility = View.VISIBLE
                     cv_send_docs.visibility = View.GONE
                     tv_status_docs.text = it.status
@@ -66,11 +66,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
                     bt_see_more_information.setOnClickListener {
                         activity!!.openActivity<SolicitationMoreDetails> {}
                     }
-                } else {
-                    cv_status_docs.visibility = View.GONE
-
-                    cv_send_docs.visibility = View.VISIBLE
-                }
             } else {
                 cv_status_docs.visibility = View.GONE
 

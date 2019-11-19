@@ -19,7 +19,7 @@ import javax.inject.Inject
 class IdentityDocsViewModel  @Inject constructor(val reference : StorageReference) : ViewModel() {
 
     var error = MutableLiveData<String>()
-    var uploadCallback = MutableLiveData<Boolean>()
+    var uploadCallback = MutableLiveData<String>()
     var deleteCallback = MutableLiveData<Boolean>()
     var documentsResponse = MutableLiveData<DocumentsDto>()
 
@@ -59,7 +59,6 @@ class IdentityDocsViewModel  @Inject constructor(val reference : StorageReferenc
                 savePathIntoUser(task.result.toString(),userID,filePath)
             } else {
                 try {
-                    uploadCallback.value = false
                     error.value = task.exception!!.message
                 } catch (e : Exception){
                     error.value = e.message
@@ -74,10 +73,9 @@ class IdentityDocsViewModel  @Inject constructor(val reference : StorageReferenc
         instance.collection(Common.UsersCollection).document(userID).collection(Common.DocumentsCollection).document(Common.DocumentsDocument)
             .set(data,SetOptions.merge())
             .addOnSuccessListener {
-                uploadCallback.value = true
+                uploadCallback.value = result
             }
             .addOnFailureListener {
-                uploadCallback.value = false
                 error.value = it.message
             }
     }

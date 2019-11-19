@@ -6,8 +6,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -16,33 +14,22 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.BuildConfig
 import com.luccas.passelivredocumentos.R
-import com.luccas.passelivredocumentos.databinding.IdentityDocsFragmentBinding
 import com.luccas.passelivredocumentos.ui.checkingcopy.CheckingCopyActivity
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
-import com.luccas.passelivredocumentos.ui.base.UploadAndRemoveFileViewModel
 import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.Common.Companion.Front_of_Identity
 import com.luccas.passelivredocumentos.utils.Common.Companion.Profile_Pic
 import com.luccas.passelivredocumentos.utils.Common.Companion.Verse_of_Identity
-import com.luccas.passelivredocumentos.utils.ImageHelper
 import com.luccas.passelivredocumentos.utils.openActivity
 import kotlinx.android.synthetic.main.identity_docs_fragment.*
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -206,11 +193,10 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
             when(requestCode) {
                 CODE_FOR_GALLERY -> {
                     val uri: Uri = data!!.data!!
-
                     try {
-                        viewModel.uploadImage(filePath,uri,sharedPref.getString("userID","")!!)
+                        viewModel.uploadImage(filePath,uri, FirebaseAuth.getInstance().currentUser!!.uid)
                         viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
-                            setPathIntoView()
+                            setPathIntoView(it)
                         })
                     } catch (e: Exception) {
                         Toast.makeText(context!!, "Não foi possível enviar a imagem. "+e.message, Toast.LENGTH_LONG).show()
@@ -220,9 +206,9 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
                 CODE_FOR_CAMERA -> {
                     file = File(cameraFilePath)
                     try {
-                        viewModel.uploadImage(filePath,Uri.fromFile(file),sharedPref.getString("userID","")!!)
+                        viewModel.uploadImage(filePath,Uri.fromFile(file),FirebaseAuth.getInstance().currentUser!!.uid)
                         viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
-                            setPathIntoView()
+                            setPathIntoView(it)
                         })
                     } catch (e: Exception) {
                         Toast.makeText(context!!, "Não foi possível enviar a imagem. "+e.message, Toast.LENGTH_LONG).show()
@@ -232,7 +218,7 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
         }
     }
 
-    private fun setPathIntoView() {
+    private fun setPathIntoView(urlImage: String) {
         lateinit var imageView : ImageView
          var error : Int? = 0
         if (filePath == Profile_Pic){
@@ -333,7 +319,7 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
         sheetViewRemoveImage!!.findViewById<MaterialButton>(R.id.bt_remove).setOnClickListener {
             photoBitmap = null
             bottomSheetRemoveImage.dismiss()
-            viewModel.removeImage(filePath,sharedPref.getString("userID","")!!).observe(this, androidx.lifecycle.Observer {
+            viewModel.removeImage(filePath,FirebaseAuth.getInstance().currentUser!!.uid).observe(this, androidx.lifecycle.Observer {
                 imageView.setImageResource(imageDefault)
                 sucess!!.value = true
             })
@@ -343,6 +329,7 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
 
     private var sheetViewChoiceCameraOrGallery: View? = null
     private lateinit var bottomSheetChoiceCameraOrGallery : BottomSheetDialog
+
     private fun selectPhoto() {
         bottomSheetChoiceCameraOrGallery  = BottomSheetDialog(ContextThemeWrapper(context!!, R.style.DialogSlideAnim))
         sheetViewChoiceCameraOrGallery = layoutInflater.inflate(R.layout.bottom_sheet_gallery_camera, null)

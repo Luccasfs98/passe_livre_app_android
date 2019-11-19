@@ -27,6 +27,8 @@ import com.luccas.passelivredocumentos.databinding.AuthBinding
 import com.luccas.passelivredocumentos.models.User
 import com.luccas.passelivredocumentos.ui.base.BaseActivity
 import com.luccas.passelivredocumentos.utils.Common
+import com.luccas.passelivredocumentos.utils.Common.Companion.email
+import com.luccas.passelivredocumentos.utils.Common.Companion.fullname
 import com.luccas.passelivredocumentos.utils.openActivity
 
 
@@ -117,8 +119,8 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
                  } else {
                      hideBsProgress()
                      sharedPref.edit().putString("userID",it.id).apply()
-                     sharedPref.edit().putString("userEmail",it.getString("email")).apply()
-                     sharedPref.edit().putString("userName",it.getString("name")).apply()
+                     sharedPref.edit().putString(email,it.getString("email")).apply()
+                     sharedPref.edit().putString(fullname,it.getString("name")).apply()
                      sharedPref.edit().putString("photoUrl",FirebaseAuth.getInstance().currentUser!!.photoUrl.toString()).apply()
                      openActivity<MainActivity>(
                          finishWhenOpen = true,

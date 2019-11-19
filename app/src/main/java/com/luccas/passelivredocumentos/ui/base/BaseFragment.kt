@@ -42,8 +42,10 @@ import com.google.firebase.firestore.core.FirestoreClient
 import com.google.firebase.storage.FirebaseStorage
 import com.luccas.passelivredocumentos.BuildConfig
 import com.luccas.passelivredocumentos.R
+import com.luccas.passelivredocumentos.models.DocumentsDto
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment
 import com.luccas.passelivredocumentos.ui.login.AuthActivity
+import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.openActivity
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.dialog_progress.view.*
@@ -123,7 +125,7 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
         Glide.with(this)
             .load(
                 FirebaseStorage.getInstance().reference
-                    .child("$path/${sharedPref.getString("userID","")}"))
+                    .child("$path/${FirebaseAuth.getInstance().currentUser!!.uid}"))
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)
             .error(error)
@@ -163,27 +165,52 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
         circularProgressDrawable.setTint(resources.getColor(R.color.colorWhite))
         circularProgressDrawable.start()
 
-        Glide.with(this)
-            .load(
-                FirebaseStorage.getInstance().reference
-                    .child("$path/${sharedPref.getString("userID","")}"))
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .error(errorImage)
-            .placeholder(circularProgressDrawable)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
-                    imageView!!.setImageResource(errorImage)
-                    isSuscess!!.value = false
-                    return true
+        val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
+        instance
+            .collection(Common.UsersCollection)
+            .document(FirebaseAuth.getInstance().currentUser!!.uid)
+            .collection(Common.DocumentsCollection)
+            .document(Common.DocumentsDocument)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                var url : String = ""
+                if (path== Common.Profile_Pic){
+                    url =documentSnapshot.toObject(DocumentsDto::class.java)!!.profile_pic
+                    sharedPref.edit().putString(path,url).apply()
                 }
-                override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
-                    imageView!!.setImageDrawable(p0)
-                    isSuscess!!.value = true
-                    return true
+                if (path== Common.Front_of_Identity){
+                    url =documentSnapshot.toObject(DocumentsDto::class.java)!!.front_of_identity
+                    sharedPref.edit().putString(path,url).apply()
                 }
-            })
-            .into(imageView!!)
+                if (path== Common.Verse_of_Identity){
+                    url =documentSnapshot.toObject(DocumentsDto::class.java)!!.identity_verse
+                    sharedPref.edit().putString(path,url).apply()
+                }
+                Glide.with(this)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .error(errorImage)
+                    .placeholder(circularProgressDrawable)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
+                            imageView!!.setImageResource(errorImage)
+                            isSuscess!!.value = false
+                            return true
+                        }
+                        override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
+                            imageView!!.setImageDrawable(p0)
+                            isSuscess!!.value = true
+                            return true
+                        }
+                    })
+                    .into(imageView!!)
+            }
+            .addOnFailureListener {
+                isSuscess!!.value = false
+
+            }
+
         return isSuscess!!
     }
 

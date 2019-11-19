@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
 import com.luccas.passelivredocumentos.ui.formpersonaldata.FormPersonalData
@@ -30,7 +31,7 @@ class SolicitationMoreDetailsFragment : BaseFragment<SolicitationMoreDetailsView
         toolbar.setNavigationOnClickListener {
             activity!!.finish()
         }
-        viewModel.getDocuments(sharedPref.getString("userID","")!!).observe(this, Observer {
+        viewModel.getDocuments(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, Observer {
             tv_status.text = it.status
             tv_message.text = "${it.description} \n ${it.reason}"
             when(it.status){
