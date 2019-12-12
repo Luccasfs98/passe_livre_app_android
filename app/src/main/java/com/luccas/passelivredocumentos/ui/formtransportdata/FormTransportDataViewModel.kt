@@ -2,6 +2,7 @@ package com.luccas.passelivredocumentos.ui.formtransportdata
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.luccas.passelivredocumentos.models.FormTransportDto
 import com.luccas.passelivredocumentos.utils.Common
@@ -49,5 +50,20 @@ class FormTransportDataViewModel @Inject constructor(): ViewModel() {
                 errorMessage.value = it.localizedMessage
             }
         return transportData
+    }
+
+    fun getTransports() : MutableLiveData<MutableList<DocumentSnapshot>> {
+        var documents = MutableLiveData<MutableList<DocumentSnapshot>>()
+        val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
+        instance
+            .collection(Common.TransportsCollection)
+            .get()
+            .addOnSuccessListener {
+                documents.value = it.documents
+            }
+            .addOnFailureListener {
+                errorMessage.value = it.localizedMessage
+            }
+        return documents
     }
 }

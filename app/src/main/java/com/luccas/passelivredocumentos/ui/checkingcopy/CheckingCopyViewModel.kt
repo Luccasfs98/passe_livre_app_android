@@ -7,11 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.luccas.passelivredocumentos.models.DocumentsDto
+import com.luccas.passelivredocumentos.models.DocumentsDto2
 import com.luccas.passelivredocumentos.models.FormTransportDto
 import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.Common.Companion.DocumentsCollection
@@ -49,7 +51,6 @@ import com.luccas.passelivredocumentos.utils.Common.Companion.schoolSemester
 import com.luccas.passelivredocumentos.utils.Common.Companion.semesterPeriodEnd
 import com.luccas.passelivredocumentos.utils.Common.Companion.semesterPeriodStart
 import com.luccas.passelivredocumentos.utils.Common.Companion.sex
-import com.luccas.passelivredocumentos.utils.Common.Companion.status
 import com.luccas.passelivredocumentos.utils.Common.Companion.street
 import com.luccas.passelivredocumentos.utils.Common.Companion.transportName
 import com.luccas.passelivredocumentos.utils.Common.Companion.turn
@@ -60,19 +61,25 @@ import com.luccas.passelivredocumentos.utils.Common.Companion.voucher_frequency
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class CheckingCopyViewModel @Inject constructor(val reference: StorageReference) : ViewModel() {
     var docsConfirmed = MutableLiveData<Boolean>()
-    var documentsResponse = MutableLiveData<DocumentsDto>()
+    var documentsResponse = MutableLiveData<List<DocumentsDto2>>()
     lateinit var transportData : MutableLiveData<FormTransportDto>
     var error = MutableLiveData<String>()
     var uploadCallback = MutableLiveData<Boolean>()
     var deleteCallback = MutableLiveData<Boolean>()
 
-    fun uploadImage(filePath:String, uri: Uri, userID:String) {
+    fun uploadImage(
+        fileName : String,
+        filePath: String,
+        uri: Uri,
+        userID: String,
+        typeFile: String
+    ) {
         uploadCallback= MutableLiveData()
         val ref = reference.child(
             "$filePath/$userID")
@@ -86,7 +93,7 @@ class CheckingCopyViewModel @Inject constructor(val reference: StorageReference)
             return@Continuation ref.downloadUrl
         }).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                savePathIntoUser(task.result.toString(),userID,filePath)
+                savePathIntoUser(fileName,task.result.toString(),userID,filePath,typeFile)
             } else {
                 try {
                     uploadCallback.value = false
@@ -98,11 +105,21 @@ class CheckingCopyViewModel @Inject constructor(val reference: StorageReference)
         }
     }
 
-    private fun savePathIntoUser(result: String?, userID: String,fileName:String) {
+    private fun savePathIntoUser(
+        fileName:String,
+        result: String?,
+        userID: String,
+        filePath: String,
+        typeFile: String
+    ) {
             val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
-             val data = hashMapOf(fileName to result)
+            val data = hashMapOf(
+                "name" to fileName,
+                "path" to result,
+                "type" to typeFile
+            )
 
-            instance.collection(UsersCollection).document(userID).collection(Common.DocumentsCollection).document(Common.DocumentsDocument)
+            instance.collection(UsersCollection).document(userID).collection(Common.DocumentsCollection).document(filePath)
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener {
                     uploadCallback.value = true
@@ -131,17 +148,20 @@ class CheckingCopyViewModel @Inject constructor(val reference: StorageReference)
         return deleteCallback
     }
 
-    fun getDocuments(userID:String): MutableLiveData<DocumentsDto> {
+    fun getDocuments(userID:String): MutableLiveData<List<DocumentsDto2>> {
         documentsResponse = MutableLiveData()
         val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
         instance
             .collection(UsersCollection)
             .document(userID)
             .collection(DocumentsCollection)
-            .document(DocumentsDocument)
             .get()
             .addOnSuccessListener { documentSnapshot ->
-                documentsResponse.value = documentSnapshot.toObject(DocumentsDto::class.java)
+                val list : ArrayList<DocumentsDto2> = ArrayList()
+                for (d in documentSnapshot){
+                    list.add(d.toObject(DocumentsDto2::class.java))
+                }
+                documentsResponse.value = list
             }
             .addOnFailureListener {
                 error.value = it.localizedMessage
@@ -177,12 +197,12 @@ class CheckingCopyViewModel @Inject constructor(val reference: StorageReference)
         val complement = sharedPref.getString(complement, "")
         val course = sharedPref.getString(course, "")
         val cpf = sharedPref.getString(cpf, "")
-        val createdAt = Date().time.toString()
+        val createdAt = Date().time
         val dateBirthday = sharedPref.getString(dateBirthday, "")
-        val email = sharedPref.getString(email, "")
+        val email = FirebaseAuth.getInstance().currentUser!!.email
         val establishment = sharedPref.getString(establishment, "")
         val front_of_identity = sharedPref.getString(front_of_identity, "")
-        val id = sharedPref.getString(id, "")
+        val id = sharedPref.getString("userID","")
         val level = sharedPref.getString(level, "")
         val line = sharedPref.getString(line, "")
         val collegeName = sharedPref.getString(collegeName, "")
@@ -191,24 +211,30 @@ class CheckingCopyViewModel @Inject constructor(val reference: StorageReference)
         val nameMother = sharedPref.getString(nameMother, "")
         val neighborhood = sharedPref.getString(neighborhood, "")
         val phone = sharedPref.getString(phone, "")
-        val schoolDays = sharedPref.getStringSet(schoolDays, null)!!.toList()
+        val schoolDays : List<String>
+        if (sharedPref.getStringSet(Common.schoolDays, null)!=null){
+             schoolDays = sharedPref.getStringSet(Common.schoolDays, null)!!.toList()
+        } else {
+            schoolDays = ArrayList()
+        }
         val schoolSemester = sharedPref.getString(schoolSemester, "")
         val semesterPeriodEnd = sharedPref.getString(semesterPeriodEnd, "")
         val semesterPeriodStart = sharedPref.getString(semesterPeriodStart, "")
         val sex = sharedPref.getString(sex, "")
         val street = sharedPref.getString(street, "")
         val transportName = sharedPref.getString(transportName, "")
-        val turn = sharedPref.getStringSet(turn, null)!!.toList()
+        val turn :List<String>
+        if (sharedPref.getStringSet(Common.turn, null)!=null){
+            turn = sharedPref.getStringSet(Common.turn, null)!!.toList()
+        } else {
+            turn = ArrayList()
+        }
+
         val type = sharedPref.getString(type, "")
         val uf = sharedPref.getString(uf, "")
-        val useIntegration = sharedPref.getBoolean(useIntegration, false)
-        val voucher_frequency = sharedPref.getString(voucher_frequency, "")
-        val identity_verse = sharedPref.getString(identity_verse, "")
-        val proof_of_address = sharedPref.getString(proof_of_address, "")
-        val proof_of_income = sharedPref.getString(proof_of_income, "")
-        val prouniScholarshipHolder = sharedPref.getBoolean(prouniScholarshipHolder, false)
-        val registration_certificate = sharedPref.getString(registration_certificate, "")
 
+
+        val useIntegration = sharedPref.getBoolean(useIntegration, false)
 
         val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
         val data = hashMapOf(
@@ -247,26 +273,45 @@ class CheckingCopyViewModel @Inject constructor(val reference: StorageReference)
             Common.turn to turn,
             Common.type to type,
             Common.uf to uf,
-            Common.useIntegration to useIntegration,
-            Common.voucher_frequency to voucher_frequency,
-            Common.identity_verse to identity_verse,
-            Common.proof_of_address to proof_of_address,
-            Common.proof_of_income to proof_of_income,
-            Common.prouniScholarshipHolder to prouniScholarshipHolder,
-            Common.registration_certificate to registration_certificate
-
-
+            Common.useIntegration to useIntegration
         )
-        instance.collection(Common.SolicitationsCollection)
+
+
+        instance
+            .collection(UsersCollection)
             .document(idUser)
-            .set(data, SetOptions.merge())
-            .addOnSuccessListener {
-                docsConfirmed.value = true
+            .collection(DocumentsCollection)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                for (d in documentSnapshot.documents){
+                    val hash = hashMapOf<String, Any>(
+                        "name" to d["name"].toString(),
+                        "path" to d["path"].toString(),
+                        "type" to d["type"].toString()
+                    )
+                    instance.collection(Common.SolicitationsCollection)
+                        .document(idUser)
+                        .collection("files")
+                        .document(d["name"].toString())
+                        .set(hash)
+                        .addOnSuccessListener {
+                        }
+                }
+                instance.collection(Common.SolicitationsCollection)
+                    .document(idUser)
+                    .set(data, SetOptions.merge())
+                    .addOnSuccessListener {
+                        docsConfirmed.value = true
+                    }
+                    .addOnFailureListener {
+                        error.value = it.message
+                    }
+
+
             }
             .addOnFailureListener {
-                error.value = it.message
+                error.value = it.localizedMessage
             }
-
         return docsConfirmed
     }
 }

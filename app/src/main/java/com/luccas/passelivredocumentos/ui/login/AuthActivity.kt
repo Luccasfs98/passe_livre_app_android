@@ -17,13 +17,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.luccas.passelivredocumentos.TermsActivity
+import com.google.firebase.iid.FirebaseInstanceId
+import com.luccas.passelivredocumentos.R.string
 import com.luccas.passelivredocumentos.TermsAndPoliticsActivity
-import com.luccas.passelivredocumentos.databinding.AuthBinding
 import com.luccas.passelivredocumentos.models.User
 import com.luccas.passelivredocumentos.ui.base.BaseActivity
 import com.luccas.passelivredocumentos.utils.Common
@@ -70,31 +69,19 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
             ) {putExtra("type", Common.terms)}
         }
     }
+
     private fun signIn() {
         val signInIntent: Intent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
     private fun configureGoogleSignIn() {
         mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken(getString(string.default_web_client_id))
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            openActivity<MainActivity> (
-                finishWhenOpen = true,
-                enterAnim = R.anim.slide_from_right,
-                exitAnim = R.anim.slide_to_left
-            ){
-            }
-        }
-    }
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
@@ -117,6 +104,7 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
                  if (it["name"]==null){
                      insertNewUserIntoDatabase()
                  } else {
+                     updateToken()
                      hideBsProgress()
                      sharedPref.edit().putString("userID",it.id).apply()
                      sharedPref.edit().putString(email,it.getString("email")).apply()
@@ -132,6 +120,18 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
              .addOnFailureListener {Log.i("teste",it.localizedMessage)
                 hideBsProgress()
              }
+    }
+
+    private fun updateToken() {
+        val token = FirebaseInstanceId.getInstance().token
+        val uid = FirebaseAuth.getInstance().uid
+
+        if(uid!=null){
+
+            FirebaseFirestore.getInstance().collection(Common.UsersCollection).document(uid).update("token",token)
+
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -164,8 +164,8 @@ class AuthActivity : BaseActivity<AuthViewModel>() {
                     userData.id+userData.name
                 )
                 sharedPref.edit().putString("userID",userData.id).apply()
-                sharedPref.edit().putString("userEmail",userData.email).apply()
-                sharedPref.edit().putString("userName",userData.name).apply()
+                sharedPref.edit().putString(email,userData.email).apply()
+                sharedPref.edit().putString(fullname,userData.name).apply()
                 sharedPref.edit().putString("photoUrl",FirebaseAuth.getInstance().currentUser!!.photoUrl.toString()).apply()
 
                 openActivity<MainActivity>(

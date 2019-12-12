@@ -2,8 +2,12 @@ package com.luccas.passelivredocumentos.ui.formtransportdata
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
@@ -18,6 +22,9 @@ class FormTransportDataFragment : BaseFragment<FormTransportDataViewModel>() {
         fun newInstance() = FormTransportDataFragment()
     }
 
+    private var userLine: String? = null
+    private lateinit var transports: ArrayList<String>
+    private lateinit var lines: ArrayList<String>
     private var alreadyHavePasseLivre : Boolean ? = false
     private var prouniScholarshipHolder : Boolean ? = false
     private var useIntegration : Boolean ? = false
@@ -34,6 +41,10 @@ class FormTransportDataFragment : BaseFragment<FormTransportDataViewModel>() {
         toolbar.setNavigationOnClickListener {
             activity!!.onBackPressed()
         }
+
+        viewModel.errorMessage.observe(this, Observer {
+            Snackbar.make(formpersonaldata,it,Snackbar.LENGTH_SHORT).show()
+        })
         bt_next.setOnClickListener {
             if(validateFields()){
                 showBottomSheetProgress()
@@ -76,14 +87,64 @@ class FormTransportDataFragment : BaseFragment<FormTransportDataViewModel>() {
             }
         }
 
-        viewModel.getTransportData(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, Observer {
 
+        viewModel.getTransports().observe(this, Observer {
+            if(it!=null){
+                transports = ArrayList()
+                transports.add("Empresa de transporte")
+                for(transport in it){
+                    transports.add(transport["nome"].toString())
+                }
+
+                val arrayAdapter = ArrayAdapter<String>(context!!,android.R.layout.simple_spinner_dropdown_item,transports)
+                sp_transports.adapter = arrayAdapter
+                lines = ArrayList()
+                lines.add("Linha")
+                sp_transports.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
+
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        if(position!=0){
+                            for(line in it[position-1]["rotas"] as ArrayList<String>){
+                                lines.add(line)
+                            }
+                            val arrayAdapter = ArrayAdapter<String>(context!!,android.R.layout.simple_spinner_dropdown_item,lines)
+                            sp_lines.adapter = arrayAdapter
+                            sp_lines.visibility = View.VISIBLE
+
+                            if (lines!=null && userLine!=null)
+                                sp_lines.setSelection(lines.indexOf(userLine!!))
+
+                        } else {
+                            sp_lines.visibility = View.GONE
+                            sp_lines.adapter = null
+                        }
+                    }
+                }
+            }
+            getTransportData()
+
+        })
+
+
+
+    }
+
+    private fun getTransportData() {
+        viewModel.getTransportData(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, Observer {
             progress_bar.visibility = View.GONE
             ln_main.visibility = View.VISIBLE
+            bt_next.visibility = View.VISIBLE
+            tv_integration_info.visibility = View.VISIBLE
 
             if (it!=null){
-                edt_transport_name.setText(it.transportName)
-                edt_line.setText(it.line)
+
+                if (transports!=null)
+                    sp_transports.setSelection(transports.indexOf(it.transportName))
+
+                userLine = it.line
 
                 if (it.prouniScholarshipHolder!!){
                     bt_prouni.isChecked = true
@@ -96,27 +157,22 @@ class FormTransportDataFragment : BaseFragment<FormTransportDataViewModel>() {
                 }
             }
         })
-
     }
 
     private fun validateFields(): Boolean {
-        var isValid = true
-        transportName = edt_transport_name.text.toString()
-        line = edt_line.text.toString()
-
-        if (transportName.isEmpty()){
-            til_transport_name.error = "Empresa de transporte inválida!"
-            isValid = false
+        if(sp_transports.selectedItem==null || sp_transports.selectedItem.toString() == "Empresa de transporte"){
+            Snackbar.make(formpersonaldata,"Selecione uma empresa!",Snackbar.LENGTH_SHORT).show()
+            return false
         } else {
-            til_transport_name.error = null
+            transportName = sp_transports.selectedItem.toString()
         }
-        if (line.isEmpty()){
-            til_line.error = "Linha inválida!"
-            isValid = false
+        if (sp_lines.selectedItem == null || sp_lines.selectedItem.toString() == "Linha"){
+            Snackbar.make(formpersonaldata,"Selecione uma linha!",Snackbar.LENGTH_SHORT).show()
+            return false
         } else {
-            til_line.error = null
+            line = sp_lines.selectedItem.toString()
         }
-        return isValid
+        return true
     }
 
 }

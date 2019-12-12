@@ -26,7 +26,6 @@ import com.luccas.passelivredocumentos.BuildConfig
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.ui.checkingcopy.CheckingCopyActivity
 import com.luccas.passelivredocumentos.ui.base.BaseFragment
-import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.Common.Companion.Front_of_Identity
 import com.luccas.passelivredocumentos.utils.Common.Companion.Profile_Pic
 import com.luccas.passelivredocumentos.utils.Common.Companion.Verse_of_Identity
@@ -43,9 +42,8 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
 
     private var count: Int = 1
     private lateinit var filePath: String
-    private var isProfilePicUploaded: Boolean = false
-    private var isIdentityFrontUploaded: Boolean = false
-    private var isIdentityVerseUploaded: Boolean = false
+    private lateinit var fileName: String
+
 
     override val layoutRes = R.layout.identity_docs_fragment
     override fun getViewModel() = IdentityDocsViewModel::class.java
@@ -55,6 +53,9 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
         const val CODE_FOR_GALLERY = 3455
         const val CODE_FOR_CAMERA = 3453
         const val PERMANENTLY_DENIED_REQUEST_CODE = 2345
+         var isProfilePicUploaded: Boolean = false
+         var isIdentityFrontUploaded: Boolean = false
+         var isIdentityVerseUploaded: Boolean = false
     }
 
     private  var file: File?=null
@@ -75,6 +76,7 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
                 setImageIntoBottomSheet(Profile_Pic,R.drawable.ic_profile_pic_default)
             } else{
                 filePath = Profile_Pic
+                fileName = "Foto do aluno"
                 selectPhoto()
             }
         }
@@ -83,6 +85,7 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
                 showBottomSheetImage()
                 setImageIntoBottomSheet(Front_of_Identity,R.drawable.ic_add)
             } else{
+                fileName = "Frente da identidade"
                 filePath = Front_of_Identity
                 selectPhoto()
             }
@@ -93,7 +96,9 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
                 setImageIntoBottomSheet(Verse_of_Identity,R.drawable.ic_add)
             } else{
                 filePath = Verse_of_Identity
+                fileName = "Verso da identidade"
                 selectPhoto()
+
             }
         }
 
@@ -126,13 +131,10 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
                 false
             }
         }
-        setupDocs(Profile_Pic, iv_profile_pic, R.drawable.ic_profile_pic_default).observe(this, androidx.lifecycle.Observer { isProfilePicUploaded = it})
-        setupDocs(Verse_of_Identity,iv_id_verse,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer {
-            isIdentityVerseUploaded = it
-        })
-        setupDocs(Front_of_Identity,iv_id_front,R.drawable.ic_add).observe(this, androidx.lifecycle.Observer {
-            isIdentityFrontUploaded = it
-        })
+
+        setupDocs(Profile_Pic, iv_profile_pic, R.drawable.ic_profile_pic_default)
+        setupDocs(Verse_of_Identity,iv_id_verse,R.drawable.ic_add)
+        setupDocs(Front_of_Identity,iv_id_front,R.drawable.ic_add)
 
         bt_next.setOnClickListener {
             Log.i("PROFILE PIC", isProfilePicUploaded.toString())
@@ -194,9 +196,9 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
                 CODE_FOR_GALLERY -> {
                     val uri: Uri = data!!.data!!
                     try {
-                        viewModel.uploadImage(filePath,uri, FirebaseAuth.getInstance().currentUser!!.uid)
+                        viewModel.uploadImage(fileName,filePath,uri,"image", FirebaseAuth.getInstance().currentUser!!.uid)
                         viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
-                            setPathIntoView(it)
+                            setPathIntoView()
                         })
                     } catch (e: Exception) {
                         Toast.makeText(context!!, "Não foi possível enviar a imagem. "+e.message, Toast.LENGTH_LONG).show()
@@ -206,9 +208,15 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
                 CODE_FOR_CAMERA -> {
                     file = File(cameraFilePath)
                     try {
-                        viewModel.uploadImage(filePath,Uri.fromFile(file),FirebaseAuth.getInstance().currentUser!!.uid)
+                        viewModel.uploadImage(
+                            fileName,
+                            filePath,
+                            Uri.fromFile(file),
+                            "image",
+                            FirebaseAuth.getInstance().currentUser!!.uid
+                        )
                         viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
-                            setPathIntoView(it)
+                            setPathIntoView()
                         })
                     } catch (e: Exception) {
                         Toast.makeText(context!!, "Não foi possível enviar a imagem. "+e.message, Toast.LENGTH_LONG).show()
@@ -218,7 +226,7 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
         }
     }
 
-    private fun setPathIntoView(urlImage: String) {
+    private fun setPathIntoView() {
         lateinit var imageView : ImageView
          var error : Int? = 0
         if (filePath == Profile_Pic){
@@ -236,7 +244,8 @@ class IdentityDocsFragment : BaseFragment<IdentityDocsViewModel>(),EasyPermissio
             error = R.drawable.ic_add
             isIdentityVerseUploaded = true
         }
-        setupDocs(filePath,imageView,error!!)
+        setupDocs(filePath, imageView, error!!)
+
     }
 
     @SuppressLint("SimpleDateFormat")

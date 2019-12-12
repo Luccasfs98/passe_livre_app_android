@@ -12,7 +12,6 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.luccas.passelivredocumentos.models.DocumentsDto
 import com.luccas.passelivredocumentos.utils.Common
-import java.io.File
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -41,10 +40,16 @@ class IdentityDocsViewModel  @Inject constructor(val reference : StorageReferenc
 
         return documentsResponse
     }
-    fun uploadImage(filePath:String, uri: Uri, userID:String) {
+    fun uploadImage(
+        fileName:String,
+        filePath: String,
+        uri: Uri,
+        extension: String,
+        uid: String
+    ) {
         uploadCallback= MutableLiveData()
         val ref = reference.child(
-            "$filePath/$userID")
+            "$filePath/$uid")
         val uploadTask = ref.putFile(uri)
         uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
             if (!task.isSuccessful) {
@@ -56,7 +61,7 @@ class IdentityDocsViewModel  @Inject constructor(val reference : StorageReferenc
             return@Continuation ref.downloadUrl
         }).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                savePathIntoUser(task.result.toString(),userID,filePath)
+                savePathIntoUser(fileName,task.result.toString(),uid,filePath,extension)
             } else {
                 try {
                     error.value = task.exception!!.message
@@ -67,10 +72,20 @@ class IdentityDocsViewModel  @Inject constructor(val reference : StorageReferenc
         }
     }
 
-    private fun savePathIntoUser(result: String?, userID: String,fileName:String) {
+    private fun savePathIntoUser(
+        fileName:String,
+        result: String?,
+        userID: String,
+        filePath: String,
+        extension: String
+    ) {
         val instance: FirebaseFirestore = FirebaseFirestore.getInstance()
-        val data = hashMapOf(fileName to result)
-        instance.collection(Common.UsersCollection).document(userID).collection(Common.DocumentsCollection).document(Common.DocumentsDocument)
+        val data = hashMapOf(
+            "name" to fileName,
+            "path" to result,
+            "type" to extension
+        )
+        instance.collection(Common.UsersCollection).document(userID).collection(Common.DocumentsCollection).document(filePath)
             .set(data,SetOptions.merge())
             .addOnSuccessListener {
                 uploadCallback.value = result

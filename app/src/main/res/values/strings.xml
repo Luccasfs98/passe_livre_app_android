@@ -33,4 +33,11 @@
     <string name="text_confirm_docs_message">Os documentos entrarão para análise após a sua confirmação, você não poderá editá-los até que seu status de análise mude. Por isso, tenha certeza de que suas informações foram digitas corretamente e as imagens em boa resolução.</string>
     <string name="text_income_prouni">Insira uma imagem ou pdf da sua liberação para comprovar renda.</string>
     <string name="text_btn_resend_documentos">Reenviar documentos</string>
+    <string name="fcm_message">Mensagem do app Passe Livre Documentos</string>
+    <string name="msg_token_fmt" />
+    <string name="text_analise">Boa notícia, sua documentação foi cadastrada no sistema da Metroplan. Agora basta aguardar a análise.</string>
+    <string name="text_devolvido">Infelizmente sua solicitação foi devolvida devido a alguma pendência, mas não se preocupe. Veja abaixo os motivos e faça uma nova solicitação com os novos documentos e informações!</string>
+    <string name="text_inapto">Infelizmente você não possui direito a este benefício! Veja abaixo o motivo:</string>
+    <string name="text_apto_dec">Ótimo! Sua documentação foi aprovada pela Metroplan. Agora basta entrar em contato com a empresa responsável pelo transporte do Passe Livre de sua cidade para solicitar seu cartão.</string>
+    <string name="text_pendente">Sua documentação está na fila para ser cadastrada nos sistemas da Metroplan.</string>
 </resources>

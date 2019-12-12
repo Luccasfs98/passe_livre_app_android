@@ -136,7 +136,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:inputType="text"
+                android:inputType="textPersonName"
                 android:maxLines="1"
                 android:id="@+id/edt_father_name"
                 style="@style/Widget.AppCompat.EditText"
@@ -161,7 +161,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:inputType="text"
+                android:inputType="textPersonName"
                 android:maxLines="1"
                 android:id="@+id/edt_mother_name"
                 style="@style/Widget.AppCompat.EditText"

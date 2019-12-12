@@ -30,17 +30,31 @@
             android:textColor="@android:color/white"
             />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:background="#fff"
                 android:padding="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-            <ImageView
+                <ImageView
                     android:id="@+id/iv"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_gravity="center"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-        </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="match_parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

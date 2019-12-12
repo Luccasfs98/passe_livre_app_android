@@ -20,3 +20,8 @@ class DocumentsDto () {
         this.sent_documents = sent_documents
         this.description = description}
 }
+class DocumentsDto2 () {
+    var name : String = ""
+    var path : String = ""
+    var type : String = ""
+}

@@ -58,11 +58,15 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
                         tv_status_docs.setTextColor(resources.getColor(R.color.colorInapto))
                     }
                     if(it.status == Common.analise){
+                        tv_status_docs.text = "Análise"
                         tv_status_docs.setTextColor(resources.getColor(R.color.colorAnalise))
                     }
                     if(it.status == Common.pendente){
                         tv_status_docs.setTextColor(resources.getColor(R.color.colorPendente))
                     }
+                if(it.status == Common.devolvido){
+                    tv_status_docs.setTextColor(resources.getColor(R.color.colorDevolvido))
+                }
                     bt_see_more_information.setOnClickListener {
                         activity!!.openActivity<SolicitationMoreDetails> {}
                     }

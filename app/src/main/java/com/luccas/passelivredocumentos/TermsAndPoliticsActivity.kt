@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.luccas.passelivredocumentos.ui.base.BaseActivity
 import com.luccas.passelivredocumentos.ui.termsandpolitics.TermsAndPoliticsViewModel
+import com.luccas.passelivredocumentos.utils.Common
 import kotlinx.android.synthetic.main.terms_and_politics_activity.*
 
 class TermsAndPoliticsActivity : BaseActivity<TermsAndPoliticsViewModel>() {
@@ -16,6 +17,12 @@ class TermsAndPoliticsActivity : BaseActivity<TermsAndPoliticsViewModel>() {
         super.onCreate(savedInstanceState)
         toolbar.setNavigationOnClickListener {
             onBackPressed()
+        }
+        if(intent.getStringExtra("type") == Common.terms){
+            toolbar.title = "Termos de Uso"
+        }
+        if(intent.getStringExtra("type") == Common.politics){
+            toolbar.title = "Políticas de privacidade"
         }
         viewModel.getTerms(intent.getStringExtra("type")!!).observe(this, Observer {
             progress_bar.visibility = View.GONE

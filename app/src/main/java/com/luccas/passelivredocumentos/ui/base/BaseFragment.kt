@@ -14,6 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.annotation.Nullable
 import androidx.appcompat.view.ContextThemeWrapper
@@ -26,10 +28,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -43,11 +47,13 @@ import com.google.firebase.storage.FirebaseStorage
 import com.luccas.passelivredocumentos.BuildConfig
 import com.luccas.passelivredocumentos.R
 import com.luccas.passelivredocumentos.models.DocumentsDto
+import com.luccas.passelivredocumentos.models.DocumentsDto2
 import com.luccas.passelivredocumentos.ui.identitydocs.IdentityDocsFragment
 import com.luccas.passelivredocumentos.ui.login.AuthActivity
 import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.openActivity
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.bottom_image_view.view.*
 import kotlinx.android.synthetic.main.dialog_progress.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -121,15 +127,26 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
 
     }
     fun setImageIntoBottomSheet(path:String,error:Int){
-        val imageView = bottomSheet.findViewById<ImageView>(R.id.iv)
+        sheetView!!.progress_bar.visibility = View.VISIBLE
         Glide.with(this)
             .load(
                 FirebaseStorage.getInstance().reference
                     .child("$path/${FirebaseAuth.getInstance().currentUser!!.uid}"))
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .error(error)
-            .into(imageView!!)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
+                    sheetView!!.progress_bar.visibility = View.GONE
+                    //sheetView!!.findViewById<ImageView>(R.id.iv)!!.visibility = View.VISIBLE
+                    Toast.makeText(context!!,p0.toString(),Toast.LENGTH_LONG).show()
+                    bottomSheet.dismiss()
+                    return false
+                }
+                override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
+                    sheetView!!.progress_bar!!.visibility = View.GONE
+                    sheetView!!.iv.setImageDrawable(p0)
+                    return false
+                }
+            })
+            .into( sheetView!!.iv)
     }
     fun getPath(uri: Uri): String? {
         val projection = arrayOf(MediaStore.Video.Media.DATA)
@@ -157,8 +174,7 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
         path: String,
         imageView: ImageView?,
         errorImage: Int
-    ) : MutableLiveData<Boolean> {
-        var isSuscess : MutableLiveData<Boolean>? = MutableLiveData()
+    )  {
         val circularProgressDrawable = CircularProgressDrawable(context!!)
         circularProgressDrawable.strokeWidth = 5f
         circularProgressDrawable.centerRadius = 30f
@@ -170,48 +186,55 @@ abstract class BaseFragment<V : ViewModel> : Fragment() {
             .collection(Common.UsersCollection)
             .document(FirebaseAuth.getInstance().currentUser!!.uid)
             .collection(Common.DocumentsCollection)
-            .document(Common.DocumentsDocument)
+            .document(path)
             .get()
             .addOnSuccessListener { documentSnapshot ->
-                var url : String = ""
-                if (path== Common.Profile_Pic){
-                    url =documentSnapshot.toObject(DocumentsDto::class.java)!!.profile_pic
-                    sharedPref.edit().putString(path,url).apply()
+                var url = ""
+                if (documentSnapshot.toObject(DocumentsDto2::class.java)!=null){
+                    if (path== Common.Profile_Pic){
+                        url =documentSnapshot.toObject(DocumentsDto2::class.java)!!.path
+                        sharedPref.edit().putString(path,url).apply()
+                    }
+                    if (path== Common.Front_of_Identity){
+                        url =documentSnapshot.toObject(DocumentsDto2::class.java)!!.path
+                        if (url!=null)
+                            sharedPref.edit().putString(path,url).apply()
+                    }
+                    if (path== Common.Verse_of_Identity){
+                        url =documentSnapshot.toObject(DocumentsDto2::class.java)!!.path
+                        if (url!=null)
+                            sharedPref.edit().putString(path,url).apply()
+                    }
+                    Glide.with(this)
+                        .load(url)
+                        .error(errorImage)
+                        .placeholder(circularProgressDrawable)
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
+                                imageView!!.setImageResource(errorImage)
+                                Toast.makeText(context!!,p0.toString(),Toast.LENGTH_LONG).show()
+                                return false
+                            }
+                            override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
+                                if (path== Common.Profile_Pic){
+                                    IdentityDocsFragment.isProfilePicUploaded = true
+                                }
+                                if (path== Common.Front_of_Identity){
+                                    IdentityDocsFragment.isIdentityFrontUploaded = true
+                                }
+                                if (path== Common.Verse_of_Identity){
+                                    IdentityDocsFragment.isIdentityVerseUploaded = true
+                                }
+                                return false
+                            }
+                        })
+                        .into(imageView!!)
                 }
-                if (path== Common.Front_of_Identity){
-                    url =documentSnapshot.toObject(DocumentsDto::class.java)!!.front_of_identity
-                    sharedPref.edit().putString(path,url).apply()
-                }
-                if (path== Common.Verse_of_Identity){
-                    url =documentSnapshot.toObject(DocumentsDto::class.java)!!.identity_verse
-                    sharedPref.edit().putString(path,url).apply()
-                }
-                Glide.with(this)
-                    .load(url)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .error(errorImage)
-                    .placeholder(circularProgressDrawable)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(p0: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean): Boolean {
-                            imageView!!.setImageResource(errorImage)
-                            isSuscess!!.value = false
-                            return true
-                        }
-                        override fun onResourceReady(p0: Drawable?, p1: Any?, p2: Target<Drawable>?, p3: DataSource?, p4: Boolean): Boolean {
-                            imageView!!.setImageDrawable(p0)
-                            isSuscess!!.value = true
-                            return true
-                        }
-                    })
-                    .into(imageView!!)
             }
             .addOnFailureListener {
-                isSuscess!!.value = false
-
+                Toast.makeText(context!!,it.message,Toast.LENGTH_LONG).show()
             }
 
-        return isSuscess!!
     }
 
    fun showSnack( it:String, root : View){

@@ -8,6 +8,7 @@ class Common {
          val EducationalEstablishmentCollection = "EducationalEstablishmentCollection"
          val EducationalEstablishmentDocument = "educationalEstablishmentDocument"
          val UsersCollection = "users"
+         val TransportsCollection = "empresas_transporte"
          val SolicitationsCollection = "solicitations"
          val PersonalDataCollection = "PersonalDataCollection"
          val PersonalDataDocument = "personalDataDocument"
@@ -35,10 +36,11 @@ class Common {
          val Reason = "reason"
 
          //REFERÊNCIA DE STATUS DA DOCUMENTAÇÃO
-         val apto = "Apto"
+         val apto = "Aprovado"
          val pendente = "Pendente"
+         val devolvido = "Devolvido"
          val inapto = "Inapto"
-         val analise = "Análise"
+         val analise = "Analise"
 
 
           //POLÍTICAS DE PRIVACIDADE

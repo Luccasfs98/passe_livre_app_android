@@ -84,15 +84,57 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
         }
 
         toggle_group_level.addOnButtonCheckedListener { group, checkedId, isChecked ->
-            when(checkedId){
 
-                R.id.btn_fundamental -> level = "Fundamental"
-                R.id.btn_medio -> level = "Médio"
-                R.id.btn_tecnico -> level = "Técnico"
-                R.id.btn_eja -> level = "Eja presencial"
-                R.id.btn_pre_vestibular -> level = "Pré-vestibular"
-                R.id.btn_superior -> level = "Superior"
+            if(isChecked){
+                when(checkedId){
+                    R.id.btn_fundamental -> {
+                        btn_fundamental.isChecked = true
+                        level = "Fundamental"
+                    }
+                    R.id.btn_medio -> {
+                        btn_medio.isChecked = true
+                        level = "Médio"
+                    }
+                    R.id.btn_tecnico -> {
+                        btn_tecnico.isChecked = true
+                        level = "Técnico"
+                    }
+                    R.id.btn_eja -> {
+                        btn_eja.isChecked = true
+                        level = "Eja presencial"
+                    }
+                    R.id.btn_pre_vestibular -> {
+                        btn_pre_vestibular.isChecked = true
+                        level = "Pré-vestibular"
+                    }
+                    R.id.btn_superior -> {
+                        btn_superior.isChecked = true
+                        level = "Superior"
+                    }
 
+                }
+            } else {
+                when(checkedId){
+                    R.id.btn_fundamental -> {
+                        btn_fundamental.isChecked = false
+                                         }
+                    R.id.btn_medio -> {
+                        btn_medio.isChecked = false
+                                          }
+                    R.id.btn_tecnico -> {
+                        btn_tecnico.isChecked = false
+                                         }
+                    R.id.btn_eja -> {
+                        btn_eja.isChecked = false
+                                      }
+                    R.id.btn_pre_vestibular -> {
+                        btn_pre_vestibular.isChecked = false
+                                          }
+                    R.id.btn_superior -> {
+                        btn_superior.isChecked = false
+                                          }
+
+                }
             }
 
         }
@@ -152,12 +194,35 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
                     edt_period_end.setText(it.semesterPeriodEnd)
                     edt_semester_number.setText(it.schoolSemester)
                     when(it.level){
-                        "Fundamental" -> btn_fundamental.isChecked = true
-                        "Médio" -> btn_medio.isChecked = true
-                        "Técnico" -> btn_tecnico.isChecked = true
-                        "Eja presencial" -> btn_eja.isChecked = true
-                        "Pré-vestibular" -> btn_pre_vestibular.isChecked = true
-                        "Superior" -> btn_superior.isChecked = true
+                        "Fundamental" ->
+                        {
+                            btn_fundamental.isChecked = true
+                            level = "Fundamental"
+                        }
+                        "Médio" -> {
+                            btn_medio.isChecked = true
+                            level = "Médio"
+                        }
+                        "Técnico" -> {
+                            btn_tecnico.isChecked = true
+                            level = "Técnico"
+
+                        }
+                        "Eja presencial" -> {
+                            btn_eja.isChecked = true
+                            level = "Eja presencial"
+
+
+                        }
+                        "Pré-vestibular" -> {
+                            level = "Pré-vestibular"
+                            btn_pre_vestibular.isChecked = true
+                        }
+                        "Superior" -> {
+                            btn_superior.isChecked = true
+                            level = "Superior"
+                        }
+
                     }
                     for(day in it.schoolDays!!){
                         when(day){
@@ -218,10 +283,19 @@ class FormCollegeInformationFragment : BaseFragment<FormCollegeInformationViewMo
             til_period_end.error = null
         }
 
-        if (level==null){
+        if (!btn_fundamental.isChecked &&
+            !btn_medio.isChecked &&
+            !btn_superior.isChecked &&
+            !btn_pre_vestibular.isChecked &&
+            !btn_eja.isChecked){
             Snackbar.make(scrollView,"Selecione o seu nível de escolaridade",Snackbar.LENGTH_SHORT).show()
             isValid = false
-
+        }
+        if (!bt_manha.isChecked &&
+            !bt_tarde.isChecked &&
+            !bt_noite.isChecked){
+            Snackbar.make(scrollView,"Selecione um ou mais turnos que estudará",Snackbar.LENGTH_SHORT).show()
+            isValid = false
         }
 
         if (days.isNullOrEmpty()){

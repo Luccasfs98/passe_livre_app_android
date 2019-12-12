@@ -45,6 +45,8 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
     private var isAddressUploaded: Boolean=false
     private lateinit var cameraFilePath: String
     private lateinit var filePath: String
+    private lateinit var fileName: String
+    private lateinit var type: String
 
     private var file: File?=null
 
@@ -77,22 +79,28 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
         }
 
         iv_address.setOnClickListener {
+            fileName = "Comprovante de residência"
             filePath = Common.AddressComprovant
             choicePdfOrImg()
         }
         iv_income_proof.setOnClickListener {
+            fileName = "Comprovante de renda"
+
             filePath = Common.IncomeComprovant
             choicePdfOrImg()
         }
         iv_frequency.setOnClickListener {
+            fileName = "Atestado de frequência"
             filePath = Common.FrequencyComprovant
             choicePdfOrImg()
         }
         iv_add_small_card.setOnClickListener {
+            fileName = "Foto carteirinha do estudante"
             filePath = Common.CardComprovant
             choicePdfOrImg()
         }
         iv_register_certificate.setOnClickListener {
+            fileName = "Atestado de matrícula"
             filePath = Common.Registration_Certificate
             choicePdfOrImg()
         }
@@ -115,30 +123,36 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
         viewModel.getDocuments(FirebaseAuth.getInstance().currentUser!!.uid).observe(this, androidx.lifecycle.Observer {
 
             if (it!=null){
-                if (it.proof_of_address.isNotEmpty()){
-                    sharedPref.edit().putString(Common.proof_of_address,it.proof_of_address).apply()
-                    iv_address.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
-                    isAddressUploaded = true
-                }
-                if (it.proof_of_income.isNotEmpty()){
-                    sharedPref.edit().putString(Common.proof_of_income,it.proof_of_income).apply()
-                    iv_income_proof.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
-                    isIncomeUploaded = true
-                }
-                if (it.card_voucher.isNotEmpty()){
-                    sharedPref.edit().putString(Common.card_voucher,it.card_voucher).apply()
-                    iv_add_small_card.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
-                    isCardUploaded = true
-                }
-                if (it.voucher_frequency.isNotEmpty()){
-                    sharedPref.edit().putString(Common.voucher_frequency,it.voucher_frequency).apply()
-                    iv_frequency.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
-                    isFrequencyUploaded = true
-                }
-                if (it.registration_certificate.isNotEmpty()){
-                    sharedPref.edit().putString(Common.registration_certificate,it.registration_certificate).apply()
-                    iv_register_certificate.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
-                    isRegisterCertificate = true
+
+                for(item in it){
+
+                    when(item.name){
+                        "Comprovante de residência" -> {
+                                sharedPref.edit().putString(Common.AddressComprovant,item.path).apply()
+                                iv_address.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
+                                isAddressUploaded = true
+                        }
+                        "Atestado de frequência" -> {
+                            sharedPref.edit().putString(Common.voucher_frequency,item.path).apply()
+                            iv_frequency.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
+                            isFrequencyUploaded = true
+                        }
+                        "Atestado de matrícula" -> {
+                            sharedPref.edit().putString(Common.registration_certificate,item.path).apply()
+                            iv_register_certificate.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
+                            isRegisterCertificate = true
+                        }
+                        "Foto carteirinha do estudante" -> {
+                            sharedPref.edit().putString(Common.card_voucher,item.path).apply()
+                            iv_add_small_card.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
+                            isCardUploaded = true
+                        }
+                        "Comprovante de renda" -> {
+                                sharedPref.edit().putString(Common.proof_of_income,item.path).apply()
+                                iv_income_proof.setImageDrawable(resources.getDrawable(R.drawable.ic_check))
+                                isIncomeUploaded = true
+                        }
+                    }
                 }
             }
             ln_main.visibility = View.VISIBLE
@@ -158,15 +172,6 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
         sheetConfirmDocs!!.findViewById<MaterialButton>(R.id.bt_send).setOnClickListener {
             viewModel.confirmDocs(FirebaseAuth.getInstance().currentUser!!.uid,sharedPref).observe(this,androidx.lifecycle.Observer {
                 activity!!.finishAffinity()
-                val userID = sharedPref.getString("userID", "")
-                val email = sharedPref.getString("userEmail", "")
-                val name = sharedPref.getString("userName", "")
-                val url = sharedPref.getString("photoUrl", "")
-                sharedPref.edit().clear().apply()
-                sharedPref.edit().putString("userID",userID).apply()
-                sharedPref.edit().putString("userEmail",email).apply()
-                sharedPref.edit().putString("userName",name).apply()
-                sharedPref.edit().putString("photoUrl",url).apply()
                 activity!!.openActivity<MainActivity> (
                     finishWhenOpen = true,
                     exitAnim = R.anim.slide_to_left
@@ -175,17 +180,6 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
         }
         sheetConfirmDocs!!.findViewById<MaterialButton>(R.id.bt_review).setOnClickListener {
             bsConfirmDocs.dismiss()
-            activity!!.supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.slide_from_left,
-                    R.anim.slide_to_right,
-                    R.anim.slide_from_right,
-                    R.anim.slide_to_left
-                )
-                .replace(R.id.container, FormCollegeInformationFragment.newInstance())
-                .setReorderingAllowed(true)
-                .addToBackStack(null)
-                .commitAllowingStateLoss()
         }
 
 
@@ -205,11 +199,12 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
         sheetPdfOrImage!!.findViewById<MaterialButton>(R.id.bt_pdf).setOnClickListener {
             bsPdfOrImage.dismiss()
             isPDF = true
+            type = "pdf"
             askAboutGallery()
-
         }
         sheetPdfOrImage!!.findViewById<MaterialButton>(R.id.bt_imagem).setOnClickListener {
             bsPdfOrImage.dismiss()
+            type = "image"
             isPDF = false
             selectPhoto()
         }
@@ -327,7 +322,7 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
                     val uri: Uri = data!!.data!!
                     if (isPDF!!){
                         try {
-                            viewModel.uploadImage(filePath,uri,sharedPref.getString("userID","")!!)
+                            viewModel.uploadImage(fileName,filePath,uri,sharedPref.getString("userID","")!!,type)
                             viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
                                 updateIcon()
                                 hideBsProgress()
@@ -340,7 +335,7 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
                         }
                     } else {
                         try {
-                            viewModel.uploadImage(filePath,uri,sharedPref.getString("userID","")!!)
+                            viewModel.uploadImage(fileName,filePath,uri,sharedPref.getString("userID","")!!,type)
                             viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
                                 updateIcon()
                                 hideBsProgress()
@@ -357,7 +352,13 @@ class CheckingCopyFragment : BaseFragment<CheckingCopyViewModel>() {
                 CODE_FOR_CAMERA -> {
                     file = File(cameraFilePath)
                     try {
-                        viewModel.uploadImage(filePath,Uri.fromFile(file),sharedPref.getString("userID","")!!)
+                        viewModel.uploadImage(
+                            fileName,
+                            filePath,
+                            Uri.fromFile(file),
+                            sharedPref.getString("userID","")!!,
+                            type
+                        )
                         viewModel.uploadCallback.observe(this,androidx.lifecycle.Observer {
                             updateIcon()
                             hideBsProgress()

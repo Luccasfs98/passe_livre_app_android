@@ -1,27 +1,31 @@
 package com.luccas.passelivredocumentos.ui
 
 import android.os.Bundle
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.widget.Toolbar
-import android.view.Menu
-import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.google.firebase.FirebaseApp
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.ResultCallback
+import com.google.android.gms.common.api.Status
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.luccas.passelivredocumentos.R
-import com.luccas.passelivredocumentos.databinding.MainBinding
 import com.luccas.passelivredocumentos.ui.base.BaseActivity
 import com.luccas.passelivredocumentos.ui.login.AuthActivity
-import com.luccas.passelivredocumentos.utils.Common
 import com.luccas.passelivredocumentos.utils.Common.Companion.email
 import com.luccas.passelivredocumentos.utils.Common.Companion.fullname
 import com.luccas.passelivredocumentos.utils.openActivity
+
 
 class MainActivity : BaseActivity<MainViewModel>() {
 
@@ -51,7 +55,9 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         val headerView = navView.getHeaderView(0)
         navView.menu.findItem(R.id.nav_quit).setOnMenuItemClickListener {
+            configureGoogleSignIn()
             FirebaseAuth.getInstance().signOut()
+            mGoogleSignInClient.signOut()
             openActivity<AuthActivity> (finishWhenOpen = true,enterAnim = R.anim.anim_fade_in,exitAnim = R.anim.anim_fade_out){  }
             true
         }
@@ -66,6 +72,16 @@ class MainActivity : BaseActivity<MainViewModel>() {
         headerView.findViewById<TextView>(R.id.tv_email).text = sharedPref.getString(email,"")
         headerView.findViewById<TextView>(R.id.tv_title).text = sharedPref.getString(fullname,"")
 
+    }
+    lateinit var mGoogleSignInClient: GoogleSignInClient
+    lateinit var mGoogleSignInOptions: GoogleSignInOptions
+
+    private fun configureGoogleSignIn() {
+        mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
     }
 
     override fun onSupportNavigateUp(): Boolean {

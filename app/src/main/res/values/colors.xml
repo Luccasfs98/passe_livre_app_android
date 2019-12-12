@@ -5,7 +5,8 @@
     <color name="colorAccent">#9E9E9E</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorApto">#77D353</color>
-    <color name="colorAnalise">#FFBA5C</color>
+    <color name="colorAnalise">#17a2b8</color>
+    <color name="colorDevolvido">#ffc107</color>
     <color name="colorPendente">#FFFB1D</color>
     <color name="colorInapto">#FA7073</color>
     <color name="colorCardStatusHeader">#5A6978</color>
